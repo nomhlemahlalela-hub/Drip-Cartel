@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRIP CARTEL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff;
+    --surface:#f6f4f0;
+    --ink:#141414;
+    --ink-soft:#6b6b67;
+    --line:#e7e4dd;
+    --beige:#cdbfa6;
+    --gold:#e2a400;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit; text-decoration:none;}
+  button{font-family:inherit; cursor:pointer;}
+  img{display:block; max-width:100%;}
+  .wrap{max-width:1320px; margin:0 auto; padding:0 40px;}
+  svg{display:block;}
+
+  /* HEADER */
+  .topbar{ border-bottom:1px solid var(--line); }
+  .topbar .wrap{ display:flex; align-items:center; justify-content:space-between; height:68px; }
+  .logo{ font-size:19px; font-weight:800; letter-spacing:-0.02em; }
+  .headicons{ display:flex; align-items:center; gap:22px; }
+  .headicons button{ background:none; border:none; color:var(--ink); display:flex; }
+  .navbar{ border-bottom:1px solid var(--line); }
+  .navbar .wrap{ display:flex; align-items:center; justify-content:center; gap:36px; height:52px; }
+  .navbar a{ font-size:12.5px; font-weight:600; letter-spacing:0.06em; color:var(--ink); }
+  .navbar a:hover{ color:var(--ink-soft); }
+  .navbar a.sale{ color:#b23a2f; }
+
+  /* HERO */
+  .hero{ position:relative; }
+  .hero-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; height:480px; }
+  .hero-panel{ position:relative; overflow:hidden; }
+  .hero-panel .ph{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+  .hero-panel .ph span{ font-weight:800; font-size:15px; letter-spacing:0.04em; opacity:0.55; transform:rotate(-8deg); }
+  .p1{ background:linear-gradient(155deg,#2b2b2b,#0c0c0c); }
+  .p2{ background:linear-gradient(160deg,#3a3a3a,#161616); }
+  .p3{ background:linear-gradient(160deg,var(--beige),#a99c82); }
+  .p3 .ph span{ color:#3a3122; opacity:.7; }
+  .p1 .ph span, .p2 .ph span{ color:#f2f2f2; }
+
+  .hero-copy{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    text-align:center; color:#fff; z-index:2; width:100%;
+  }
+  .hero-copy h1{
+    font-size:clamp(24px,3.4vw,42px); font-weight:800; line-height:1.15; letter-spacing:-0.01em;
+    text-shadow:0 2px 18px rgba(0,0,0,0.35);
+  }
+  .hero-ctas{ display:flex; gap:12px; justify-content:center; margin-top:26px; }
+  .hbtn{
+    font-size:12.5px; font-weight:700; letter-spacing:0.05em; padding:14px 26px; border-radius:2px; border:1.5px solid transparent;
+  }
+  .hbtn.solid{ background:#fff; color:#141414; }
+  .hbtn.solid:hover{ background:#eee; }
+  .hbtn.line{ background:rgba(20,20,20,0.35); color:#fff; border-color:rgba(255,255,255,0.7); }
+  .hbtn.line:hover{ background:rgba(20,20,20,0.55); }
+
+  .dots{ display:flex; justify-content:center; gap:8px; padding:18px 0; }
+  .dots span{ width:6px; height:6px; border-radius:50%; background:var(--line); }
+  .dots span.active{ background:var(--ink); }
+
+  /* TRUST BAR */
+  .trust{ border-bottom:1px solid var(--line); }
+  .trust .wrap{ display:grid; grid-template-columns:repeat(4,1fr); padding:30px 40px; }
+  .trust-item{ display:flex; align-items:center; gap:14px; }
+  .trust-item svg{ flex:none; color:var(--ink); }
+  .trust-item .t{ font-size:12.5px; font-weight:700; letter-spacing:0.02em; }
+  .trust-item .s{ font-size:12px; color:var(--ink-soft); margin-top:2px; }
+
+  /* CATEGORY */
+  .section{ padding:56px 0; }
+  .section-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+  .section-head h2{ font-size:16px; font-weight:800; letter-spacing:0.04em; }
+  .section-head .view-all{ font-size:12.5px; font-weight:700; display:flex; align-items:center; gap:6px; }
+  .cat-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:18px; }
+  .cat-card{ display:block; }
+  .cat-card .thumb{
+    aspect-ratio:1/1.05; border-radius:6px; overflow:hidden; margin-bottom:12px; position:relative;
+  }
+  .cat-card .thumb .ph{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+  .cat-card .thumb .ph span{ font-weight:800; font-size:11px; letter-spacing:0.04em; color:#fff; opacity:.6; transform:rotate(-6deg); }
+  .c1{ background:linear-gradient(155deg,#2c2c2c,#0d0d0d); }
+  .c2{ background:linear-gradient(150deg,#3d3d3d,#161616); }
+  .c3{ background:linear-gradient(150deg,#232323,#050505); }
+  .c4{ background:linear-gradient(150deg,#4a4a4a,#1c1c1c); }
+  .c5{ background:linear-gradient(150deg,#2f2f2f,#0f0f0f); }
+  .cat-card .name{ font-size:12.5px; font-weight:700; letter-spacing:0.03em; }
+  .cat-card .sub{ font-size:11.5px; color:var(--ink-soft); margin-top:2px; }
+
+  /* FILTER BAR */
+  .filterbar{
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    padding:18px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  }
+  .filterbar-left{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+  .filter-btn{
+    display:flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:2px;
+    background:none; font-size:12.5px; font-weight:600; padding:9px 14px; color:var(--ink);
+  }
+  .count{ font-size:12.5px; color:var(--ink-soft); }
+  .chip{
+    display:flex; align-items:center; gap:6px; background:var(--surface); border-radius:2px;
+    font-size:12px; padding:7px 10px; font-weight:500;
+  }
+  .chip button{ background:none; border:none; font-size:13px; line-height:1; color:var(--ink-soft); }
+  .clear-all{ font-size:12px; font-weight:600; text-decoration:underline; color:var(--ink-soft); }
+  .filterbar-right{ display:flex; align-items:center; gap:10px; }
+  .sort{
+    display:flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:2px;
+    padding:9px 14px; font-size:12.5px; font-weight:600;
+  }
+  .view-toggle{ display:flex; gap:8px; }
+  .view-toggle button{ border:1px solid var(--line); background:none; border-radius:2px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; color:var(--ink); }
+
+  /* PRODUCT GRID */
+  .pgrid{ display:grid; grid-template-columns:repeat(4,1fr); gap:24px; padding-top:32px; }
+  .pcard{ display:block; }
+  .pcard .thumb{
+    aspect-ratio:3/3.7; border-radius:6px; overflow:hidden; margin-bottom:14px; position:relative;
+  }
+  .pcard .thumb .ph{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+  .pcard .thumb .ph span{ font-weight:800; font-size:13px; letter-spacing:0.03em; color:#fff; opacity:.55; transform:rotate(-8deg); }
+  .g1{ background:linear-gradient(155deg,#2a2a2a,#0b0b0b); }
+  .g2{ background:linear-gradient(155deg,#333,#111); }
+  .g3{ background:linear-gradient(160deg,var(--beige),#a89b81); }
+  .g3 .ph span{ color:#3a3122; opacity:.7; }
+  .g4{ background:linear-gradient(155deg,#2a2a2a,#050505); }
+  .wishlist{
+    position:absolute; top:12px; right:12px; width:32px; height:32px; border-radius:50%;
+    background:rgba(255,255,255,0.92); display:flex; align-items:center; justify-content:center; color:var(--ink);
+  }
+  .sale-tag{
+    position:absolute; top:12px; left:12px; background:#141414; color:#fff; font-size:10.5px; font-weight:700;
+    letter-spacing:0.05em; padding:5px 9px; border-radius:2px;
+  }
+  .pcard .cat{ font-size:11px; font-weight:700; letter-spacing:0.04em; color:var(--ink-soft); text-transform:uppercase; margin-bottom:4px; }
+  .pcard .name{ font-size:14px; font-weight:700; margin-bottom:6px; }
+  .stars{ display:flex; align-items:center; gap:5px; margin-bottom:8px; }
+  .stars .s-row{ display:flex; gap:1px; }
+  .stars .count{ font-size:11.5px; color:var(--ink-soft); }
+  .price-row{ display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+  .price{ font-size:14px; font-weight:800; }
+  .price.strike{ color:var(--ink-soft); text-decoration:line-through; font-weight:500; font-size:12.5px; }
+  .save{ font-size:11.5px; color:#b23a2f; font-weight:600; }
+  .add-btn{
+    width:100%; background:#141414; color:#fff; border:none; padding:12px; font-size:12px;
+    font-weight:700; letter-spacing:0.05em; border-radius:2px;
+  }
+  .add-btn:hover{ background:#2a2a2a; }
+
+  @media (max-width:980px){
+    .navbar .wrap{ flex-wrap:wrap; height:auto; padding:12px 40px; gap:16px 22px; }
+    .hero-grid{ grid-template-columns:1fr; height:auto; }
+    .hero-panel{ height:220px; }
+    .trust .wrap{ grid-template-columns:repeat(2,1fr); gap:20px; }
+    .cat-grid{ grid-template-columns:repeat(2,1fr); }
+    .pgrid{ grid-template-columns:repeat(2,1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <a href="#" class="logo">DRIP CARTEL</a>
+    <div class="headicons">
+      <button aria-label="Search"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+      <button aria-label="Account"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></button>
+      <button aria-label="Cart"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-13z"/><path d="M6 6L5 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<div class="navbar">
+  <div class="wrap">
+    <a href="#">New in</a>
+    <a href="#shop">Hoodies</a>
+    <a href="#shop">T-shirts</a>
+    <a href="#shop">Jackets</a>
+    <a href="#shop">Pants</a>
+    <a href="#shop">Accessories</a>
+    <a href="#" class="sale">Sale</a>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-panel p1"><div class="ph"><span>DRIP CARTEL<br>WORLDWIDE</span></div></div>
+    <div class="hero-panel p2"><div class="ph"><span>DRIP CARTEL<br>NEW COLLECTION</span></div></div>
+    <div class="hero-panel p3"><div class="ph"><span>DRIP CARTEL<br>EST. 2020</span></div></div>
+  </div>
+  <div class="hero-copy">
+    <h1>It's not just a brand<br>it's a lifestyle</h1>
+    <div class="hero-ctas">
+      <a href="#shop" class="hbtn solid">Shop now</a>
+      <a href="#" class="hbtn line">View lookbook</a>
+    </div>
+  </div>
+</section>
+<div class="dots"><span class="active"></span><span></span><span></span></div>
+
+<div class="trust">
+  <div class="wrap">
+    <div class="trust-item">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="6" width="14" height="10"/><path d="M15 10h4l3 3v3h-7z"/><circle cx="6" cy="19" r="1.6"/><circle cx="17.5" cy="19" r="1.6"/></svg>
+      <div><div class="t">Free delivery</div><div class="s">On orders over R999</div></div>
+    </div>
+    <div class="trust-item">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4v6h6"/><path d="M20 20v-6h-6"/><path d="M5.5 9A8 8 0 0119 8.5"/><path d="M18.5 15A8 8 0 015 15.5"/></svg>
+      <div><div class="t">Easy returns</div><div class="s">30-day return policy</div></div>
+    </div>
+    <div class="trust-item">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="10" width="16" height="10" rx="1"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+      <div><div class="t">Secure payments</div><div class="s">100% secure checkout</div></div>
+    </div>
+    <div class="trust-item">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 13a8 8 0 0116 0"/><rect x="2" y="13" width="4" height="6" rx="1"/><rect x="18" y="13" width="4" height="6" rx="1"/></svg>
+      <div><div class="t">Customer support</div><div class="s">Here to help</div></div>
+    </div>
+  </div>
+</div>
+
+<section class="section" id="categories">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Shop by category</h2>
+      <a href="#shop" class="view-all">View all &rarr;</a>
+    </div>
+    <div class="cat-grid">
+      <a href="#" class="cat-card">
+        <div class="thumb c1"><div class="ph"><span>DRIP CARTEL</span></div></div>
+        <div class="name">Hoodies</div><div class="sub">Shop now</div>
+      </a>
+      <a href="#" class="cat-card">
+        <div class="thumb c2"><div class="ph"><span>BLOC</span></div></div>
+        <div class="name">T-shirts</div><div class="sub">Shop now</div>
+      </a>
+      <a href="#" class="cat-card">
+        <div class="thumb c3"><div class="ph"><span>DRIP CARTEL</span></div></div>
+        <div class="name">Jackets</div><div class="sub">Shop now</div>
+      </a>
+      <a href="#" class="cat-card">
+        <div class="thumb c4"><div class="ph"><span>&nbsp;</span></div></div>
+        <div class="name">Pants</div><div class="sub">Shop now</div>
+      </a>
+      <a href="#" class="cat-card">
+        <div class="thumb c5"><div class="ph"><span>DRIP CARTEL</span></div></div>
+        <div class="name">Accessories</div><div class="sub">Shop now</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="shop">
+  <div class="wrap">
+    <div class="filterbar">
+      <div class="filterbar-left">
+        <button class="filter-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+          Filters
+        </button>
+        <span class="count">48 products</span>
+        <div class="chip">Size: S <button aria-label="Remove">&times;</button></div>
+        <div class="chip">Size: M <button aria-label="Remove">&times;</button></div>
+        <div class="chip">Colour: Black <button aria-label="Remove">&times;</button></div>
+        <a href="#" class="clear-all">Clear all</a>
+      </div>
+      <div class="filterbar-right">
+        <div class="sort">Featured
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="view-toggle">
+          <button aria-label="Grid view"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
+          <button aria-label="List view"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pgrid">
+      <a href="#" class="pcard">
+        <div class="thumb g1">
+          <div class="ph"><span>DRIP CARTEL<br>WORLDWIDE</span></div>
+          <div class="wishlist"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 5a5.5 5.5 0 019.5 7c-2.5 4.5-9.5 9-9.5 9z"/></svg></div>
+        </div>
+        <div class="cat">Hoodies</div>
+        <div class="name">Full Cartel Outfit</div>
+        <div class="stars"><span class="s-row">★★★★★</span><span class="count">(24)</span></div>
+        <div class="price-row"><span class="price">R 649</span></div>
+        <button class="add-btn">Add to cart</button>
+      </a>
+
+      <a href="#" class="pcard">
+        <div class="thumb g2">
+          <div class="sale-tag">Sale</div>
+          <div class="ph"><span>BLOC</span></div>
+          <div class="wishlist"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 5a5.5 5.5 0 019.5 7c-2.5 4.5-9.5 9-9.5 9z"/></svg></div>
+        </div>
+        <div class="cat">T-shirts</div>
+        <div class="name">Bloc Letter Tee</div>
+        <div class="stars"><span class="s-row">★★★☆☆</span><span class="count">(17)</span></div>
+        <div class="price-row"><span class="price">R 279</span><span class="price strike">R 399</span><span class="save">Save R120</span></div>
+        <button class="add-btn">Add to cart</button>
+      </a>
+
+      <a href="#" class="pcard">
+        <div class="thumb g3">
+          <div class="ph"><span>&nbsp;</span></div>
+          <div class="wishlist"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 5a5.5 5.5 0 019.5 7c-2.5 4.5-9.5 9-9.5 9z"/></svg></div>
+        </div>
+        <div class="cat">Hoodies</div>
+        <div class="name">Essential Hoodie</div>
+        <div class="stars"><span class="s-row">★★★★★</span><span class="count">(31)</span></div>
+        <div class="price-row"><span class="price">R 599</span></div>
+        <button class="add-btn">Add to cart</button>
+      </a>
+
+      <a href="#" class="pcard">
+        <div class="thumb g4">
+          <div class="ph"><span>DRIP CARTEL<br>CAPTAIN</span></div>
+          <div class="wishlist"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 5a5.5 5.5 0 019.5 7c-2.5 4.5-9.5 9-9.5 9z"/></svg></div>
+        </div>
+        <div class="cat">Jackets</div>
+        <div class="name">Cartel Bomber Jacket</div>
+        <div class="stars"><span class="s-row">★★★★☆</span><span class="count">(12)</span></div>
+        <div class="price-row"><span class="price">R 799</span></div>
+        <button class="add-btn">Add to cart</button>
+      </a>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
