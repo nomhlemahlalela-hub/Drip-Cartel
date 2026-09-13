@@ -84,10 +84,67 @@ color:white;
 }
 
 .container{
-width:1100px;
+width:1200px;
 max-width:95%;
 margin:auto;
 padding:40px 0;
+}
+
+.account-shell{
+  display:grid;
+  grid-template-columns:260px minmax(0,1fr);
+  gap:28px;
+  align-items:start;
+}
+
+.sidebar{
+  position:sticky;
+  top:86px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:20px 18px;
+}
+
+.profile-box{
+  padding:16px 12px 18px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:rgba(30,111,255,.05);
+  margin-bottom:18px;
+}
+
+.avatar{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  color:white;
+  font-family:var(--display);
+  font-size:26px;
+  font-weight:800;
+  margin-bottom:12px;
+}
+
+.profile-box h3{
+  font-family:var(--display);
+  font-size:24px;
+  letter-spacing:1px;
+  margin-bottom:4px;
+}
+
+.profile-box p{
+  color:var(--muted);
+  font-size:12px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+
+.content-area{
+  min-width:0;
 }
 
 .page-title{
@@ -405,40 +462,47 @@ border-radius:6px;
 
 .tab-bar{
 display:flex;
-gap:6px;
-overflow-x:auto;
-border-bottom:1px solid var(--border);
-margin-bottom:35px;
-padding-bottom:0;
+flex-direction:column;
+gap:8px;
+margin-bottom:0;
+padding:0;
 }
 
 .tab-bar::-webkit-scrollbar{ height:4px; }
 .tab-bar::-webkit-scrollbar-thumb{ background:var(--border); }
 
 .tab-btn{
-background:none;
-border:none;
+background:rgba(255,255,255,0.01);
+border:1px solid transparent;
 color:var(--muted);
 font-family:var(--display);
 font-size:14px;
 font-weight:700;
 letter-spacing:1px;
 text-transform:uppercase;
-padding:12px 18px;
+padding:12px 14px;
 cursor:pointer;
 white-space:nowrap;
-border-bottom:2px solid transparent;
+text-align:left;
+border-radius:8px;
 transition:.25s;
 }
 
-.tab-btn:hover{ color:var(--text); }
+.tab-btn:hover{ color:var(--text); border-color:var(--border); }
 
 .tab-btn.active{
-color:var(--accent2);
-border-bottom-color:var(--accent);
+color:var(--text);
+background:rgba(30,111,255,.12);
+border-color:var(--accent);
 }
 
-.page-section{ display:none; }
+.page-section{
+  display:none;
+  background:rgba(13,31,60,0.42);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:32px;
+}
 .page-section.active{ display:block; animation:fadeIn.3s ease; }
 
 @keyframes fadeIn{
@@ -1058,18 +1122,28 @@ DRIP <span>CARTEL</span>
 
 <div class="container">
 
-<div class="tab-bar" id="tabBar">
-<button class="tab-btn active" data-tab="dashboard" onclick="showSection('dashboard')">Dashboard</button>
-<button class="tab-btn" data-tab="points" onclick="showSection('points')">Points</button>
-<button class="tab-btn" data-tab="coupons" onclick="showSection('coupons')">Coupons</button>
-<button class="tab-btn" data-tab="tracking" onclick="showSection('tracking')">Tracking</button>
-<button class="tab-btn" data-tab="wishlist" onclick="showSection('wishlist')">Wishlist</button>
-<button class="tab-btn" data-tab="profile" onclick="showSection('profile')">Profile</button>
-<button class="tab-btn" data-tab="addresses" onclick="showSection('addresses')">Addresses</button>
-<button class="tab-btn" data-tab="payments" onclick="showSection('payments')">Payments</button>
-</div>
+<div class="account-shell">
+  <aside class="sidebar">
+    <div class="profile-box">
+      <div class="avatar">J</div>
+      <h3>Jordan</h3>
+      <p>Member since 2024</p>
+    </div>
 
-<div class="page-section" id="section-dashboard">
+    <div class="tab-bar" id="tabBar">
+      <button class="tab-btn active" data-tab="dashboard" onclick="showSection('dashboard')">Dashboard</button>
+      <button class="tab-btn" data-tab="points" onclick="showSection('points')">Points</button>
+      <button class="tab-btn" data-tab="coupons" onclick="showSection('coupons')">Coupons</button>
+      <button class="tab-btn" data-tab="tracking" onclick="showSection('tracking')">Tracking</button>
+      <button class="tab-btn" data-tab="wishlist" onclick="showSection('wishlist')">Wishlist</button>
+      <button class="tab-btn" data-tab="profile" onclick="showSection('profile')">Profile</button>
+      <button class="tab-btn" data-tab="addresses" onclick="showSection('addresses')">Addresses</button>
+      <button class="tab-btn" data-tab="payments" onclick="showSection('payments')">Payments</button>
+    </div>
+  </aside>
+
+  <main class="content-area">
+    <div class="page-section" id="section-dashboard">
 <h1 class="page-title">My <span>Account</span></h1>
 <p class="subtitle">Manage your rewards, coupons, orders and wishlist in one place.</p>
 
@@ -1153,7 +1227,6 @@ DRIP <span>CARTEL</span>
 
 <div class="card">
 <div class="icon">💳</div>
-<div> <button>  hit me </button> </div>
 <h3>Payment Methods</h3>
 <p>Securely manage your saved payment methods.</p>
 <button class="btn" onclick="showSection('payments')">Manage</button>
@@ -1608,7 +1681,8 @@ No real card data is processed or stored on this page &mdash; secure payment pro
 </div>
 
 </div>
-
+  </main>
+</div>
 </div>
 
 <footer>
