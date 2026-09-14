@@ -1,0 +1,27 @@
+# ─────────────────────────────────────────────────────────────
+# Drip Cartel — Firebase Functions Environment
+# ─────────────────────────────────────────────────────────────
+#
+# Set these values using the Firebase CLI before deploying:
+#
+#   firebase functions:config:set \
+#     mail.user="your-gmail@gmail.com" \
+#     mail.pass="your-gmail-app-password"
+#
+# IMPORTANT: Use a Gmail App Password (not your account password).
+# Generate one at: https://myaccount.google.com/apppasswords
+#
+# After setting config, deploy functions:
+#   firebase deploy --only functions
+#
+# ─────────────────────────────────────────────────────────────
+
+# Gmail credentials for Nodemailer
+MAIL_USER=your-gmail@gmail.com
+MAIL_PASS=your-gmail-app-password
+
+# (Optional) If using a custom SMTP server instead of Gmail:
+# SMTP_HOST=smtp.yourdomain.com
+# SMTP_PORT=587
+# SMTP_USER=noreply@DripCartel.org
+# SMTP_PASS=your-smtp-password
