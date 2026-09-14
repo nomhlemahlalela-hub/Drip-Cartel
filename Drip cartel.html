@@ -184,7 +184,7 @@
     <div class="headicons">
       <button aria-label="Search"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
       <button aria-label="Account"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></button>
-      <button aria-label="Cart"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-13z"/><path d="M6 6L5 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg></button>
+      <button aria-label="Cart" id="cartButton" onclick="openCart()"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-13z"/><path d="M6 6L5 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg><span class="cart-count" id="cartCount">0</span></button>
     </div>
   </div>
 </div>
@@ -304,7 +304,7 @@
         <div class="name">Full Cartel Outfit</div>
         <div class="stars"><span class="s-row">★★★★★</span><span class="count">(24)</span></div>
         <div class="price-row"><span class="price">R 649</span></div>
-        <button class="add-btn">Add to cart</button>
+        <button class="add-btn" onclick="addProduct(event, 'Full Cartel Outfit', 'Hoodies', 649)">Add to cart</button>
       </a>
 
       <a href="#" class="pcard">
@@ -317,7 +317,7 @@
         <div class="name">Bloc Letter Tee</div>
         <div class="stars"><span class="s-row">★★★☆☆</span><span class="count">(17)</span></div>
         <div class="price-row"><span class="price">R 279</span><span class="price strike">R 399</span><span class="save">Save R120</span></div>
-        <button class="add-btn">Add to cart</button>
+        <button class="add-btn" onclick="addProduct(event, 'Bloc Letter Tee', 'T-shirts', 279)">Add to cart</button>
       </a>
 
       <a href="#" class="pcard">
@@ -329,7 +329,7 @@
         <div class="name">Essential Hoodie</div>
         <div class="stars"><span class="s-row">★★★★★</span><span class="count">(31)</span></div>
         <div class="price-row"><span class="price">R 599</span></div>
-        <button class="add-btn">Add to cart</button>
+        <button class="add-btn" onclick="addProduct(event, 'Essential Hoodie', 'Hoodies', 599)">Add to cart</button>
       </a>
 
       <a href="#" class="pcard">
@@ -341,11 +341,93 @@
         <div class="name">Cartel Bomber Jacket</div>
         <div class="stars"><span class="s-row">★★★★☆</span><span class="count">(12)</span></div>
         <div class="price-row"><span class="price">R 799</span></div>
-        <button class="add-btn">Add to cart</button>
+        <button class="add-btn" onclick="addProduct(event, 'Cartel Bomber Jacket', 'Jackets', 799)">Add to cart</button>
       </a>
     </div>
   </div>
 </section>
+
+<div class="checkout-shell" id="checkoutShell" aria-hidden="true">
+  <div class="checkout-backdrop" onclick="closeCheckout()"></div>
+  <section class="checkout-panel" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+    <button class="checkout-close" aria-label="Close checkout" onclick="closeCheckout()">&times;</button>
+    <div class="checkout-progress">
+      <button class="checkout-step active" id="checkoutStep1" onclick="showCheckoutStep(1)"><b>1</b><span>Cart</span></button>
+      <i></i><button class="checkout-step" id="checkoutStep2" onclick="showCheckoutStep(2)"><b>2</b><span>Shipping</span></button>
+      <i></i><button class="checkout-step" id="checkoutStep3" onclick="showCheckoutStep(3)"><b>3</b><span>Payment</span></button>
+    </div>
+
+    <div class="checkout-view active" id="checkoutCartView">
+      <div class="checkout-heading"><span>YOUR</span><h2 id="checkoutTitle">Cart</h2></div>
+      <div class="checkout-layout-mini">
+        <div><div class="checkout-items" id="checkoutItems"></div><p class="checkout-empty" id="checkoutEmpty">Your cart is waiting for its first statement piece.</p></div>
+        <aside class="checkout-summary">
+          <h3>Order summary</h3>
+          <div class="promo-inline"><input id="promoInput" placeholder="Promo code"><button onclick="applyCheckoutPromo()">Apply</button></div>
+          <div class="summary-line"><span>Subtotal</span><strong id="summarySubtotal">R 0</strong></div>
+          <div class="summary-line"><span>Shipping</span><strong id="summaryShipping">R 99</strong></div>
+          <div class="summary-line total"><span>Total</span><strong id="summaryTotal">R 0</strong></div>
+          <p class="promo-message" id="promoMessage"></p>
+          <button class="checkout-primary" onclick="showCheckoutStep(2)">Proceed to checkout</button>
+          <button class="checkout-secondary" onclick="closeCheckout()">Continue shopping</button>
+        </aside>
+      </div>
+    </div>
+
+    <div class="checkout-view" id="checkoutShippingView">
+      <div class="checkout-heading"><span>STEP TWO</span><h2>Shipping details</h2></div>
+      <div class="checkout-layout-mini">
+        <div class="checkout-form-grid">
+          <label>First name<input placeholder="e.g. Siyanda"></label><label>Last name<input placeholder="e.g. Dlamini"></label>
+          <label>Email address<input type="email" placeholder="you@email.com"></label><label>Phone number<input type="tel" placeholder="+27 82 000 0000"></label>
+          <label class="wide">Street address<input placeholder="123 Main Street"></label><label>City<input placeholder="Johannesburg"></label><label>Postal code<input placeholder="2196"></label>
+          <div class="wide delivery-choice"><button class="selected" onclick="selectDeliveryChoice(this)"><span>Standard delivery</span><b>R 99</b><small>3-5 business days</small></button><button onclick="selectDeliveryChoice(this)"><span>Express delivery</span><b>R 199</b><small>1-2 business days</small></button><button onclick="selectDeliveryChoice(this)"><span>Pargo click & collect</span><b>FREE</b><small>3-5 days</small></button></div>
+        </div>
+        <aside class="checkout-summary compact-summary"><h3>Order total</h3><div class="summary-line"><span>Items</span><strong id="shippingItemTotal">R 0</strong></div><div class="summary-line total"><span>Total</span><strong id="shippingTotal">R 0</strong></div><button class="checkout-primary" onclick="showCheckoutStep(3)">Continue to payment</button><button class="checkout-secondary" onclick="showCheckoutStep(1)">Back to cart</button></aside>
+      </div>
+    </div>
+
+    <div class="checkout-view" id="checkoutPaymentView">
+      <div class="checkout-heading"><span>STEP THREE</span><h2>Payment method</h2></div>
+      <div class="checkout-layout-mini">
+        <div class="payment-choices"><button class="payment-choice selected" onclick="selectPaymentChoice(this)"><strong>PayFast</strong><span>Card, EFT, SnapScan</span></button><button class="payment-choice" onclick="selectPaymentChoice(this)"><strong>Yoco</strong><span>Instant card payment</span></button><button class="payment-choice" onclick="selectPaymentChoice(this)"><strong>Ozow</strong><span>Instant EFT</span></button></div>
+        <aside class="checkout-summary compact-summary"><h3>Ready to order?</h3><div class="summary-line total"><span>Total</span><strong id="paymentTotal">R 0</strong></div><p class="secure-copy">Secure checkout with encrypted payment.</p><button class="checkout-primary" onclick="completeCheckout()">Place order</button><button class="checkout-secondary" onclick="showCheckoutStep(2)">Back to shipping</button></aside>
+      </div>
+    </div>
+
+    <div class="checkout-view confirmation-view" id="checkoutConfirmationView"><div class="confirmation-mark">&#10003;</div><div class="checkout-heading"><span>THANK YOU</span><h2>Order confirmed</h2></div><p>Your order has been placed successfully. We will send tracking details to your email shortly.</p><strong class="order-number">DC-2026-00847</strong><button class="checkout-primary" onclick="closeCheckout()">Continue shopping</button></div>
+  </section>
+</div>
+
+<script>
+  const cart = [];
+  let checkoutShipping = 99;
+  function money(value) { return 'R ' + value.toLocaleString('en-ZA'); }
+  function addProduct(event, name, category, price) {
+    event.preventDefault(); event.stopPropagation();
+    const existing = cart.find(item => item.name === name);
+    if (existing) existing.quantity += 1;
+    else cart.push({ name, category, price, quantity: 1 });
+    renderCart(); openCart();
+  }
+  function openCart() { renderCart(); document.getElementById('checkoutShell').classList.add('open'); document.getElementById('checkoutShell').setAttribute('aria-hidden', 'false'); showCheckoutStep(1); }
+  function closeCheckout() { document.getElementById('checkoutShell').classList.remove('open'); document.getElementById('checkoutShell').setAttribute('aria-hidden', 'true'); }
+  function cartTotal() { return cart.reduce((total, item) => total + item.price * item.quantity, 0); }
+  function renderCart() {
+    const items = document.getElementById('checkoutItems'); items.innerHTML = '';
+    document.getElementById('checkoutEmpty').style.display = cart.length ? 'none' : 'block';
+    cart.forEach((item, index) => { items.insertAdjacentHTML('beforeend', `<article class="checkout-item"><div class="checkout-item-art">${item.category}</div><div class="checkout-item-info"><small>${item.category}</small><strong>${item.name}</strong><span>${money(item.price)} each</span><div class="checkout-quantity"><button onclick="changeQuantity(${index}, -1)">-</button><b>${item.quantity}</b><button onclick="changeQuantity(${index}, 1)">+</button><button class="item-remove" onclick="removeFromCart(${index})">Remove</button></div></div><strong class="checkout-item-price">${money(item.price * item.quantity)}</strong></article>`); });
+    const total = cartTotal(); document.getElementById('cartCount').textContent = cart.reduce((sum, item) => sum + item.quantity, 0); document.getElementById('summarySubtotal').textContent = money(total); document.getElementById('summaryShipping').textContent = cart.length ? money(checkoutShipping) : money(0); document.getElementById('summaryTotal').textContent = money(total + (cart.length ? checkoutShipping : 0)); ['shippingItemTotal', 'shippingTotal', 'paymentTotal'].forEach(id => { const element = document.getElementById(id); if (element) element.textContent = money(total + (id === 'shippingItemTotal' ? 0 : checkoutShipping)); });
+  }
+  function changeQuantity(index, amount) { cart[index].quantity = Math.max(1, cart[index].quantity + amount); renderCart(); }
+  function removeFromCart(index) { cart.splice(index, 1); renderCart(); }
+  function showCheckoutStep(step) { document.querySelectorAll('.checkout-view').forEach(view => view.classList.remove('active')); const view = document.getElementById(['', 'checkoutCartView', 'checkoutShippingView', 'checkoutPaymentView'][step]); if (view) view.classList.add('active'); document.querySelectorAll('.checkout-step').forEach((button, index) => button.classList.toggle('active', index < step)); renderCart(); }
+  function selectDeliveryChoice(button) { document.querySelectorAll('.delivery-choice button').forEach(item => item.classList.remove('selected')); button.classList.add('selected'); checkoutShipping = button.querySelector('b').textContent === 'FREE' ? 0 : parseInt(button.querySelector('b').textContent.replace(/\D/g, ''), 10); renderCart(); }
+  function selectPaymentChoice(button) { document.querySelectorAll('.payment-choice').forEach(item => item.classList.remove('selected')); button.classList.add('selected'); }
+  function applyCheckoutPromo() { const input = document.getElementById('promoInput'); const message = document.getElementById('promoMessage'); message.textContent = input.value.trim().toUpperCase() === 'DRIP20' ? 'DRIP20 applied at checkout.' : 'Try DRIP20 for 20% off.'; }
+  function completeCheckout() { document.querySelectorAll('.checkout-view').forEach(view => view.classList.remove('active')); document.getElementById('checkoutConfirmationView').classList.add('active'); document.querySelectorAll('.checkout-step').forEach(button => button.classList.remove('active')); cart.length = 0; document.getElementById('cartCount').textContent = '0'; }
+  renderCart();
+</script>
 
 </body>
 </html>
