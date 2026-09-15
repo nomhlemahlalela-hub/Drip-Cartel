@@ -146,9 +146,8 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
 @media(max-width:400px){.products-grid{grid-template-columns:1fr}}
 .product-card { background: var(--card); overflow: hidden; position: relative; cursor: pointer; }
 .product-card:hover .product-actions { opacity: 1; transform: translateY(0); }
-.product-img-wrap { position: relative; aspect-ratio: 3/4; overflow: hidden; background: var(--dark); }
-.product-img-wrap img { transition: transform .5s ease; }
-.product-card:hover .product-img-wrap img { transform: scale(1.05); }
+.product-img-wrap { position: relative; aspect-ratio: 3/4; overflow: hidden; background: var(--dark); display: flex; align-items: center; justify-content: center; }
+.product-type-label { font-family: var(--font-tech); font-size: 14px; letter-spacing: 3px; color: var(--subtle); text-align: center; text-transform: uppercase; }
 .product-badge { position: absolute; top: 12px; left: 12px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; padding: 4px 8px; text-transform: uppercase; z-index: 2; }
 .badge-new { background: var(--cyan); color: #000; }
 .badge-limited { background: #0066aa; color: white; border: 1px solid var(--cyan); }
@@ -476,6 +475,13 @@ footer { background: var(--charcoal); border-top: 1px solid var(--border); }
 .account-layout { display: grid; grid-template-columns: 240px 1fr; gap: 32px; padding: 60px 0 80px; }
 @media(max-width:700px){.account-layout{grid-template-columns:1fr}}
 .account-sidebar { background: var(--card); border: 1px solid var(--border); padding: 24px; height: fit-content; }
+.customer-auth { background: var(--card); border: 1px solid var(--border); padding: 32px; max-width: 620px; }
+.customer-auth h2 { font-family: var(--font-tech); font-size: 24px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+.customer-auth-sub { color: var(--subtle); font-family: var(--font-body); margin-bottom: 24px; }
+.customer-auth-tabs { display: flex; gap: 8px; margin-bottom: 24px; }
+.customer-auth-tab { flex: 1; background: transparent; border: 1px solid var(--border); color: var(--subtle); padding: 12px; font-family: var(--font-tech); letter-spacing: 2px; cursor: pointer; }
+.customer-auth-tab.active { background: var(--cyan); border-color: var(--cyan); color: var(--black); }
+.customer-auth-message { display: none; color: var(--red); font-family: var(--font-mono); font-size: 10px; letter-spacing: 1px; margin-top: 12px; }
 .account-nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); font-family: var(--font-tech); font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--subtle); cursor: pointer; transition: color .2s; }
 .account-nav-item:hover, .account-nav-item.active { color: var(--cyan); }
 .account-nav-item:last-child { border: none; }
@@ -1774,7 +1780,7 @@ footer { background: var(--charcoal); border-top: 1px solid var(--border); }
         </h1>
         
         <div class="hero-cta">
-          <button class="btn btn-primary" onclick="scrollToId('new-drop')" title='Browse all drops'>SHOP NOW ›</button>
+          <button class="btn btn-primary" onclick="showPage('account');openCustomerAuth('create')" title='Create an account to shop'>SHOP NOW ›</button>
           <button class="btn btn-outline" onclick="scrollToId('new-drop')">NEW DROP</button>
           <button class="btn btn-red" onclick="scrollToId('countdown')">LIMITED DROP</button>
         </div>
@@ -2561,7 +2567,11 @@ footer { background: var(--charcoal); border-top: 1px solid var(--border); }
             <span class="filter-chip active" onclick="filterProducts('all',this)">ALL</span>
             <span class="filter-chip" onclick="filterProducts('hoodies',this)">HOODIES</span>
             <span class="filter-chip" onclick="filterProducts('tees',this)">TEES</span>
+            <span class="filter-chip" onclick="filterProducts('crop-tops',this)">CROP TOPS</span>
             <span class="filter-chip" onclick="filterProducts('pants',this)">PANTS</span>
+            <span class="filter-chip" onclick="filterProducts('trousers',this)">TROUSERS</span>
+            <span class="filter-chip" onclick="filterProducts('shorts',this)">SHORTS</span>
+            <span class="filter-chip" onclick="filterProducts('tracksuits',this)">TRACKSUITS</span>
             <span class="filter-chip" onclick="filterProducts('jackets',this)">JACKETS</span>
             <span class="filter-chip" onclick="filterProducts('accessories',this)">ACCESSORIES</span>
           </div>
@@ -3017,13 +3027,24 @@ footer { background: var(--charcoal); border-top: 1px solid var(--border); }
           <p style="font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:2px;margin:12px 0 24px">START BUILDING YOUR DRIP</p>
           <button class="btn btn-primary" onclick="showPage('shop')">SHOP NOW</button>
         </div>
-        <div style="margin-top:32px;padding:24px;background:var(--card);border:1px solid var(--border)">
-          <h3 style="font-family:var(--font-tech);font-size:20px;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px">NOT SIGNED IN</h3>
-          <p style="font-family:var(--font-body);font-size:14px;color:var(--subtle);margin-bottom:20px">Create an account to track orders, manage your wishlist, and access exclusive member benefits.</p>
-          <div style="display:flex;gap:12px">
-            <button class="btn btn-primary" style="font-size:15px;padding:12px 28px">CREATE ACCOUNT</button>
-            <button class="btn btn-outline" style="font-size:15px;padding:12px 28px">SIGN IN</button>
+        <div class="customer-auth" id="customerAuth">
+          <h2 id="customerAuthTitle">CREATE YOUR ACCOUNT</h2>
+          <p class="customer-auth-sub">Sign in or create an account before entering the store.</p>
+          <div class="customer-auth-tabs">
+            <button class="customer-auth-tab active" id="createAccountTab" onclick="openCustomerAuth('create')">CREATE ACCOUNT</button>
+            <button class="customer-auth-tab" id="signInTab" onclick="openCustomerAuth('login')">LOG IN</button>
           </div>
+          <form onsubmit="submitCustomerAuth(event)">
+            <div id="customerCreateFields">
+              <div class="form-group"><label>Full Name *</label><input type="text" class="form-input" id="customerName" placeholder="Your full name"></div>
+              <div class="form-group"><label>Phone Number *</label><input type="tel" class="form-input" id="customerPhone" placeholder="+27 xx xxx xxxx"></div>
+            </div>
+            <div class="form-group"><label>Email Address *</label><input type="email" class="form-input" id="customerEmail" placeholder="your@email.com"></div>
+            <div class="form-group"><label>Password *</label><input type="password" class="form-input" id="customerPassword" placeholder="At least 8 characters"></div>
+            <div class="form-group" id="customerConfirmGroup"><label>Confirm Password *</label><input type="password" class="form-input" id="customerPasswordConfirm" placeholder="Enter your password again"></div>
+            <button class="btn btn-primary" type="submit" id="customerAuthButton">CREATE ACCOUNT</button>
+            <p class="customer-auth-message" id="customerAuthMessage"></p>
+          </form>
         </div>
       </div>
     </div>
@@ -3719,6 +3740,16 @@ const products = [
   { id:11, name:'Cartel Shorts', cat:'pants', price:499, badge:'', emoji:'🩲', sizes:['S','M','L','XL','XXL'], desc:'Relaxed basketball short with elastic waistband and zip pockets. DC wordmark print on left thigh.', available:true },
   { id:12, name:'DRIP CARTEL Windbreaker', cat:'jackets', price:1099, badge:'new', emoji:'🧥', sizes:['S','M','L','XL','XXL'], desc:'Lightweight nylon windbreaker. Packable into chest pocket. Reflective DC logo. Urban utility at its finest.', available:true },
   { id:13, name:'DRIP CARTEL Denim Jacket', cat:'jackets', price:1299, badge:'', emoji:'🧥', sizes:['S','M','L','XL'], desc:'Washed black denim with custom embroidered back panel. Oversized fit. The rarest piece in the wardrobe.', available:true },
+  { id:14, name:'Cartel Ribbed Beanie', cat:'beanies', price:249, badge:'new', emoji:'🧢', sizes:['ONE SIZE'], desc:'Soft ribbed knit beanie with a clean Cartel logo patch.', available:true },
+  { id:15, name:'Drip Signature Cap', cat:'caps', price:299, badge:'', emoji:'🧢', sizes:['ONE SIZE'], desc:'Structured six-panel cap with an adjustable back strap and embroidered logo.', available:true },
+  { id:16, name:'Cartel Classic T-Shirt', cat:'tshirts', price:399, badge:'new', emoji:'👕', sizes:['S','M','L','XL','XXL'], desc:'Heavyweight cotton t-shirt with a relaxed streetwear fit.', available:true },
+  { id:17, name:'Drip Utility Trousers', cat:'trousers', price:749, badge:'', emoji:'👖', sizes:['S','M','L','XL'], desc:'Relaxed utility trousers with multiple pockets and a durable cotton blend.', available:true },
+  { id:18, name:'Cartel Essential Shorts', cat:'shorts', price:499, badge:'', emoji:'🩳', sizes:['S','M','L','XL','XXL'], desc:'Everyday street shorts with an elastic waist and zip pockets.', available:true },
+  { id:19, name:'Core Black Tracksuit', cat:'tracksuits', price:1299, badge:'new', emoji:'🩲', sizes:['S','M','L','XL','XXL'], desc:'A clean black matching tracksuit built for everyday movement.', available:true },
+  { id:20, name:'Ice Blue Tracksuit', cat:'tracksuits', price:1399, badge:'limited', emoji:'🩲', sizes:['S','M','L','XL'], desc:'Limited ice blue two-piece tracksuit with contrast Cartel branding.', available:true },
+  { id:21, name:'Graphite Panel Tracksuit', cat:'tracksuits', price:1499, badge:'limited', emoji:'🩲', sizes:['S','M','L','XL','XXL'], desc:'Panelled graphite tracksuit with a tapered fit and reflective details.', available:true },
+  { id:22, name:'Cartel Zip Jacket', cat:'jackets', price:1099, badge:'new', emoji:'🧥', sizes:['S','M','L','XL','XXL'], desc:'Lightweight full-zip jacket with a high collar and signature chest mark.', available:true },
+  { id:23, name:'Drip Crop Top', cat:'crop-tops', price:349, badge:'new', emoji:'👕', sizes:['XS','S','M','L'], desc:'Cropped heavyweight cotton tee designed for a sharp everyday fit.', available:true },
 ];
 
 let cart = [];
@@ -3745,11 +3776,10 @@ function formatPrice(zarPrice) {
 // ===== RENDER PRODUCT CARD =====
 function productCard(p, compact=false) {
   const badge = p.badge ? `<div class="product-badge badge-${p.badge}">${p.badge==='new'?'NEW':p.badge==='limited'?'LIMITED':'SOLD OUT'}</div>` : '';
-  const imgUrl = getProductImg(p.id);
   return `<div class="product-card" onclick="openProduct(${p.id})">
     <div class="product-img-wrap">
       ${badge}
-      <img src="${imgUrl}" alt="${p.name}" loading="lazy">
+      <div class="product-type-label">${p.cat.replace('-', ' ')}</div>
       <div class="product-actions" onclick="event.stopPropagation()">
         <button class="product-actions button btn-cart" onclick="quickAdd(${p.id})">+ ADD TO CART</button>
         <button class="btn-wish" onclick="toggleWish(${p.id})">♡</button>
@@ -4015,6 +4045,39 @@ function renderWishlist() {
   if(!el) return;
   if(wishlist.length===0) { el.innerHTML = `<p style="font-family:var(--font-mono);font-size:12px;color:var(--subtle);letter-spacing:3px;text-align:center;padding:60px 0">YOUR WISHLIST IS EMPTY — <button onclick="showPage('shop')" style="background:none;border:none;color:var(--cyan);cursor:pointer;font-family:var(--font-mono);font-size:12px;letter-spacing:3px;text-decoration:underline">BROWSE THE STORE</button></p>`; return; }
   el.innerHTML = `<div class="products-grid">${wishlist.map(id=>productCard(products.find(p=>p.id===id))).join('')}</div>`;
+}
+
+// ===== CUSTOMER ACCOUNT GATE =====
+let customerAuthMode = 'create';
+function openCustomerAuth(mode) {
+  customerAuthMode = mode;
+  const createMode = mode === 'create';
+  document.getElementById('customerAuthTitle').textContent = createMode ? 'CREATE YOUR ACCOUNT' : 'LOG IN TO SHOP';
+  document.getElementById('customerAuthButton').textContent = createMode ? 'CREATE ACCOUNT' : 'LOG IN';
+  document.getElementById('customerCreateFields').style.display = createMode ? 'block' : 'none';
+  document.getElementById('customerConfirmGroup').style.display = createMode ? 'block' : 'none';
+  document.getElementById('createAccountTab').classList.toggle('active', createMode);
+  document.getElementById('signInTab').classList.toggle('active', !createMode);
+  document.getElementById('customerAuthMessage').style.display = 'none';
+}
+function submitCustomerAuth(event) {
+  event.preventDefault();
+  const email = document.getElementById('customerEmail').value.trim();
+  const password = document.getElementById('customerPassword').value;
+  const message = document.getElementById('customerAuthMessage');
+  let error = '';
+  if(!email || !email.includes('@')) error = 'Enter a valid email address.';
+  else if(password.length < 8) error = 'Password must be at least 8 characters.';
+  else if(customerAuthMode === 'create' && !document.getElementById('customerName').value.trim()) error = 'Enter your full name.';
+  else if(customerAuthMode === 'create' && !document.getElementById('customerPhone').value.trim()) error = 'Enter your phone number.';
+  else if(customerAuthMode === 'create' && password !== document.getElementById('customerPasswordConfirm').value) error = 'Passwords do not match.';
+  if(error) {
+    message.textContent = error;
+    message.style.display = 'block';
+    return;
+  }
+  showToast(customerAuthMode === 'create' ? 'Account created. Welcome to the Cartel!' : 'You are now logged in.');
+  showPage('shop');
 }
 
 // ===== PAGES =====
