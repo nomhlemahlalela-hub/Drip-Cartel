@@ -654,7 +654,7 @@ const FREE_SHIP = 800, SHIP_FEE = 80;  // free shipping over R800, otherwise fla
 
 // price is in ZAR. cat: tops | bottoms | sets | headwear | accessories
 // out: sizes that are sold out.  limited: true shows under the "Limited" filter.
-const PRODUCTS = [
+const FALLBACK_PRODUCTS = [
   { id:'beanie',  name:'DC Beanie',            cat:'headwear',    price:80,   sizes:['One size'], tag:'',        img:'images/beanie.jpg',
     desc:'Black ribbed knit · embroidered DRIP CARTEL logo · one size fits all' },
   { id:'jacket',  name:'DC Tracksuit Jacket',  cat:'tops',        price:500,  sizes:['S','M','L','XL','XXL'], out:['XXL'], tag:'New', img:'images/jacket.jpg',
@@ -667,7 +667,6 @@ const PRODUCTS = [
     desc:'Relaxed cargo fit · utility pockets · DC logo tab' },
   { id:'denimset',name:'Denim Set: Jacket + Cargo Pants', cat:'sets', price:1000, sizes:['S','M','L','XL','XXL'], out:['XXL'], tag:'Save R100', limited:true, img:'images/denim-set.jpg',
     desc:'His full denim fit · save R100 against buying separately' },
-  // ---- sample items: replace with your real products ----
   { id:'tee',     name:'DC Logo Tee',          cat:'tops',        price:250,  sizes:['S','M','L','XL','XXL'], tag:'', img:'images/tee.jpg',
     desc:'Heavyweight cotton tee · DRIP CARTEL chest print' },
   { id:'cap',     name:'DC Cap',               cat:'headwear',    price:120,  sizes:['One size'], tag:'', img:'images/cap.jpg',
@@ -675,7 +674,8 @@ const PRODUCTS = [
   { id:'bag',     name:'DC Crossbody Bag',     cat:'accessories', price:180,  sizes:['One size'], tag:'', img:'images/bag.jpg',
     desc:'Black utility crossbody · zip pockets · adjustable strap · DC logo' }
 ];
-const DROP = [['beanie','Headwear'],['jacket','Top'],['pants','Bottom']];   // items beside the New Drop photo
+let PRODUCTS = [];
+const DROP = [['beanie','Headwear'],['jacket','Top'],['pants','Bottom']];
 const CATS = [['all','All'],['tops','Tops'],['bottoms','Bottoms'],['sets','Sets'],['headwear','Headwear'],['accessories','Accessories'],['limited','Limited'],['saved','Saved']];
 /* ===================================================================== */
 
@@ -695,6 +695,26 @@ let users = store.get('dc_users', {});
 const state = { user:null, cur:store.get('dc_cur','ZAR'), filter:'all', sort:'featured', q:'', sel:{}, promo:false, after:null, step:1, editing:false };
 { const s = store.get('dc_session', null); if (s && users[s]) state.user = users[s]; }
 const saveUser = () => { if (state.user){ users[state.user.email] = state.user; store.set('dc_users', users); } };
+
+async function loadCatalog() {
+  const api = window.DC;
+  if (!api || typeof api.products !== 'function') {
+    PRODUCTS = FALLBACK_PRODUCTS;
+    return;
+  }
+
+  try {
+    const data = await api.products();
+    if (Array.isArray(data) && data.length) {
+      PRODUCTS = data;
+      return;
+    }
+  } catch (error) {
+    console.warn('Supabase catalog load failed, using fallback catalog:', error);
+  }
+
+  PRODUCTS = FALLBACK_PRODUCTS;
+}
 
 /* ---------- helpers ---------- */
 const money = n => state.cur === 'ZAR' ? 'R' + Math.round(n).toLocaleString('en-ZA') : '$' + (n / RATE).toFixed(2);
@@ -1012,7 +1032,7 @@ function updateCheckoutFields(){
 }
 $('#co-delivery').addEventListener('change', updateCheckoutFields);
 $('#co-payment').addEventListener('change', updateCheckoutFields);
-$('#checkoutForm').addEventListener('submit', e => {
+$('#checkoutForm').addEventListener('submit', async e => {
   e.preventDefault();
   const fields = [$('#co-name'), $('#co-phone'), $('#co-email'), $('#co-address'), $('#co-city'), $('#co-province'), $('#co-postal'), $('#co-voucher')];
   let ok = true;
@@ -1026,7 +1046,45 @@ $('#checkoutForm').addEventListener('submit', e => {
     ok = fieldErr(field, message) && ok;
   });
   if (!ok) return;
-  const u = state.user, t = totals();
+
+  const u = state.user;
+  const orderPayload = {
+    cart: u.cart,
+    delivery: { method: $('#co-delivery').value },
+    payment: { method: $('#co-payment').value, voucher_last4: $('#co-voucher').value.trim() },
+    contact: {
+      name: $('#co-name').value.trim(),
+      phone: $('#co-phone').value.trim(),
+      email: $('#co-email').value.trim(),
+      address: $('#co-address').value.trim(),
+      city: $('#co-city').value.trim(),
+      province: $('#co-province').value.trim(),
+      postal: $('#co-postal').value.trim(),
+      notes: $('#co-notes').value.trim()
+    },
+    promo_code: state.promo ? 'DRIP10' : ''
+  };
+
+  if (window.DC && typeof window.DC.placeOrder === 'function') {
+    try {
+      const result = await window.DC.placeOrder(orderPayload);
+      u.cart = [];
+      state.promo = false;
+      saveUser();
+      closeModal('checkoutModal');
+      renderCart();
+      renderProfile();
+      toast(`Order ${result.order_no} placed. Use Track order to follow it.`);
+      $('#tr-order').value = result.order_no;
+      $('#tr-phone').value = $('#co-phone').value.replace(/\D/g, '').slice(-4);
+      return;
+    } catch (error) {
+      toast(error && error.message ? error.message : 'We could not place that order.');
+      return;
+    }
+  }
+
+  const t = totals();
   const id = 'DC-' + Math.random().toString(36).slice(2, 8).toUpperCase();
   const order = {
     id, date:Date.now(), total:t.total, status:'awaiting_payment', paid:false,
@@ -1155,7 +1213,10 @@ $('#contactForm').addEventListener('submit', e => {
 });
 
 $('#yr').textContent = new Date().getFullYear();
-renderAll();
+(async () => {
+  await loadCatalog();
+  renderAll();
+})();
 })();
 </script>
 </body>

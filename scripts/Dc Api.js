@@ -12,8 +12,9 @@
    database is what protects the data. Never put the service role key here.
    ===================================================================== */
 window.DC = (() => {
-  const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
-  const SUPABASE_ANON_KEY = 'YOUR-ANON-KEY';
+  const cfg = window.DRIP_CARTEL_SUPABASE || { url: 'https://YOUR-PROJECT.supabase.co', anonKey: 'YOUR-ANON-KEY' };
+  const SUPABASE_URL = cfg.url;
+  const SUPABASE_ANON_KEY = cfg.anonKey;
 
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   const fail = (e, fallback) => { throw new Error((e && e.message) || fallback); };
