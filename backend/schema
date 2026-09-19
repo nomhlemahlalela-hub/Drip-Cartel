@@ -1,0 +1,503 @@
+-- =====================================================================
+--  DRIP CARTEL — Supabase schema
+--  Run this once in the Supabase SQL editor (Dashboard → SQL → New query).
+--  Money is stored in CENTS (integer). R500,00 = 50000.
+-- =====================================================================
+
+create extension if not exists "pgcrypto";
+
+-- ---------------------------------------------------------------------
+-- 1. PROFILES  (one row per auth user)
+-- ---------------------------------------------------------------------
+create table if not exists public.profiles (
+  id          uuid primary key references auth.users on delete cascade,
+  full_name   text not null,
+  username    text unique,
+  email       text not null,
+  phone       text,
+  city        text,
+  province    text default 'Gauteng',
+  size        text,
+  address     text,
+  is_admin    boolean not null default false,
+  created_at  timestamptz not null default now()
+);
+
+-- new auth user -> profile row, filled from the sign-up metadata
+create or replace function public.handle_new_user()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  insert into public.profiles (id, full_name, username, email, phone, city, size, address)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'full_name', split_part(new.email,'@',1)),
+    nullif(new.raw_user_meta_data->>'username',''),
+    new.email,
+    new.raw_user_meta_data->>'phone',
+    new.raw_user_meta_data->>'city',
+    new.raw_user_meta_data->>'size',
+    new.raw_user_meta_data->>'address'
+  )
+  on conflict (id) do nothing;
+  return new;
+end $$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_user();
+
+-- admin check that does NOT recurse into profiles RLS
+create or replace function public.is_admin()
+returns boolean language sql stable security definer set search_path = public as $$
+  select coalesce((select is_admin from public.profiles where id = auth.uid()), false);
+$$;
+
+-- ---------------------------------------------------------------------
+-- 2. CATALOGUE
+-- ---------------------------------------------------------------------
+create table if not exists public.products (
+  id           text primary key,              -- 'jacket', 'denimset' ...
+  name         text not null,
+  category     text not null check (category in ('tops','bottoms','sets','headwear','accessories')),
+  description  text,
+  price_cents  integer not null check (price_cents >= 0),
+  tag          text default '',
+  is_limited   boolean not null default false,
+  is_active    boolean not null default true,
+  sort_order   integer not null default 100,
+  image_path   text,                          -- storage path in bucket 'products'
+  created_at   timestamptz not null default now()
+);
+
+create table if not exists public.product_variants (
+  id          uuid primary key default gen_random_uuid(),
+  product_id  text not null references public.products on delete cascade,
+  size        text not null,
+  stock       integer not null default 0 check (stock >= 0),
+  unique (product_id, size)
+);
+create index if not exists idx_variants_product on public.product_variants(product_id);
+
+-- ---------------------------------------------------------------------
+-- 3. ORDERS
+-- ---------------------------------------------------------------------
+-- status ladder used by the tracker:
+--   awaiting_payment -> payment_review -> paid -> packed -> shipped -> delivered
+--   (shipped == "ready for collection" when delivery_method = 'collect')
+create table if not exists public.orders (
+  id               uuid primary key default gen_random_uuid(),
+  order_no         text unique not null,
+  user_id          uuid references auth.users on delete set null,
+  email            text not null,
+  status           text not null default 'awaiting_payment'
+                   check (status in ('awaiting_payment','payment_review','paid','packed','shipped','delivered','cancelled')),
+
+  delivery_method  text not null check (delivery_method in ('door','locker','collect')),
+  delivery_eta     text,
+  recipient_name   text not null,
+  phone            text not null,
+  address          text,
+  city             text,
+  province         text,
+  postal_code      text,
+  notes            text,
+
+  payment_method   text not null check (payment_method in ('eft','instant','voucher','cash')),
+  payment_ref      text,                      -- what the customer must use as reference
+  paid             boolean not null default false,
+  paid_at          timestamptz,
+  gateway          text,                      -- 'ozow' | 'payfast' | 'yoco' | null
+  gateway_ref      text,
+  voucher_last4    text,
+
+  subtotal_cents   integer not null,
+  discount_cents   integer not null default 0,
+  shipping_cents   integer not null default 0,
+  total_cents      integer not null,
+  promo_code       text,
+
+  tracking_no      text,
+  created_at       timestamptz not null default now(),
+  updated_at       timestamptz not null default now()
+);
+create index if not exists idx_orders_user on public.orders(user_id);
+create index if not exists idx_orders_status on public.orders(status);
+
+create table if not exists public.order_items (
+  id               uuid primary key default gen_random_uuid(),
+  order_id         uuid not null references public.orders on delete cascade,
+  product_id       text references public.products on delete set null,
+  name             text not null,             -- snapshot, survives product edits
+  size             text not null,
+  qty              integer not null check (qty > 0),
+  unit_price_cents integer not null
+);
+create index if not exists idx_items_order on public.order_items(order_id);
+
+create table if not exists public.order_events (
+  id         uuid primary key default gen_random_uuid(),
+  order_id   uuid not null references public.orders on delete cascade,
+  status     text not null,
+  note       text,
+  created_at timestamptz not null default now()
+);
+create index if not exists idx_events_order on public.order_events(order_id);
+
+create table if not exists public.payment_proofs (
+  id           uuid primary key default gen_random_uuid(),
+  order_id     uuid not null references public.orders on delete cascade,
+  storage_path text not null,                 -- bucket 'proofs'
+  note         text,
+  created_at   timestamptz not null default now()
+);
+
+-- ---------------------------------------------------------------------
+-- 4. MESSAGES (contact form) + PROMOS + SETTINGS
+-- ---------------------------------------------------------------------
+create table if not exists public.messages (
+  id         uuid primary key default gen_random_uuid(),
+  name       text not null,
+  email      text not null,
+  body       text not null,
+  handled    boolean not null default false,
+  reply_note text,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.promo_codes (
+  code             text primary key,
+  percent          integer not null check (percent between 1 and 100),
+  first_order_only boolean not null default true,
+  is_active        boolean not null default true
+);
+
+create table if not exists public.settings (
+  key   text primary key,
+  value jsonb not null
+);
+
+insert into public.settings (key, value) values
+  ('shipping', '{
+     "door":    {"fee_cents": 8000, "free_over_cents": 80000, "eta": "2–4 working days"},
+     "locker":  {"fee_cents": 6000, "free_over_cents": null,  "eta": "2–3 working days"},
+     "collect": {"fee_cents": 0,    "free_over_cents": null,  "eta": "Ready within 24 hours"}
+   }'::jsonb),
+  ('bank', '{
+     "Bank": "FNB",
+     "Account name": "Drip Cartel (Pty) Ltd",
+     "Account number": "62812345678",
+     "Account type": "Cheque / current",
+     "Branch code": "250655"
+   }'::jsonb),
+  ('pickup', '"Cartel HQ, 42 Burnett St, Hatfield, Pretoria · Mon–Sat, 10:00–18:00"'::jsonb)
+on conflict (key) do nothing;
+
+insert into public.promo_codes (code, percent, first_order_only)
+values ('DRIP10', 10, true) on conflict (code) do nothing;
+
+-- ---------------------------------------------------------------------
+-- 5. ORDER CREATION  (server-side: prices and stock come from the DB,
+--    never from the browser)
+-- ---------------------------------------------------------------------
+create or replace function public.new_order_no()
+returns text language plpgsql as $$
+declare n text;
+begin
+  loop
+    n := 'DC-' || upper(substr(md5(random()::text || clock_timestamp()::text), 1, 6));
+    exit when not exists (select 1 from public.orders where order_no = n);
+  end loop;
+  return n;
+end $$;
+
+-- p = {
+--   items:[{product_id,size,qty}], delivery_method, payment_method,
+--   recipient_name, phone, address, city, province, postal_code, notes,
+--   email, promo_code, voucher_last4
+-- }
+create or replace function public.create_order(p jsonb)
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare
+  it            jsonb;
+  v_order_id    uuid;
+  v_order_no    text;
+  v_sub         integer := 0;
+  v_disc        integer := 0;
+  v_ship        integer := 0;
+  v_method      text := p->>'delivery_method';
+  v_pay         text := p->>'payment_method';
+  v_email       text := lower(coalesce(p->>'email', (select email from public.profiles where id = auth.uid())));
+  v_ship_cfg    jsonb;
+  v_free_over   integer;
+  v_promo       record;
+  v_prod        record;
+  v_variant     record;
+  v_qty         integer;
+  v_status      text;
+begin
+  if v_method not in ('door','locker','collect') then raise exception 'Unknown delivery method'; end if;
+  if v_pay not in ('eft','instant','voucher','cash') then raise exception 'Unknown payment method'; end if;
+  if v_pay = 'cash' and v_method <> 'collect' then raise exception 'Pay on collection is only for collection orders'; end if;
+  if v_email is null then raise exception 'An email address is required'; end if;
+  if jsonb_array_length(coalesce(p->'items','[]'::jsonb)) = 0 then raise exception 'Your cart is empty'; end if;
+  if v_method <> 'collect' and coalesce(p->>'postal_code','') !~ '^\d{4}$' then
+    raise exception 'A 4-digit postal code is required';
+  end if;
+
+  v_order_no := public.new_order_no();
+
+  insert into public.orders (
+    order_no, user_id, email, delivery_method, recipient_name, phone, address, city, province, postal_code, notes,
+    payment_method, payment_ref, voucher_last4, subtotal_cents, total_cents,
+    delivery_eta
+  ) values (
+    v_order_no, auth.uid(), v_email, v_method,
+    p->>'recipient_name', p->>'phone',
+    case when v_method = 'collect' then (select value #>> '{}' from public.settings where key='pickup') else p->>'address' end,
+    p->>'city', p->>'province', nullif(p->>'postal_code',''), nullif(p->>'notes',''),
+    v_pay, v_order_no, nullif(p->>'voucher_last4',''), 0, 0,
+    (select value->v_method->>'eta' from public.settings where key='shipping')
+  ) returning id into v_order_id;
+
+  -- items: price and stock are read (and locked) from the database
+  for it in select * from jsonb_array_elements(p->'items') loop
+    v_qty := greatest(1, coalesce((it->>'qty')::int, 1));
+
+    select * into v_prod from public.products
+      where id = it->>'product_id' and is_active limit 1;
+    if not found then raise exception 'Product % is not available', it->>'product_id'; end if;
+
+    select * into v_variant from public.product_variants
+      where product_id = v_prod.id and size = it->>'size' for update;
+    if not found then raise exception '% is not available in size %', v_prod.name, it->>'size'; end if;
+    if v_variant.stock < v_qty then
+      raise exception 'Only % left of % in size %', v_variant.stock, v_prod.name, v_variant.size;
+    end if;
+
+    update public.product_variants set stock = stock - v_qty where id = v_variant.id;
+
+    insert into public.order_items (order_id, product_id, name, size, qty, unit_price_cents)
+    values (v_order_id, v_prod.id, v_prod.name, v_variant.size, v_qty, v_prod.price_cents);
+
+    v_sub := v_sub + (v_prod.price_cents * v_qty);
+  end loop;
+
+  -- promo
+  if coalesce(p->>'promo_code','') <> '' then
+    select * into v_promo from public.promo_codes
+      where code = upper(p->>'promo_code') and is_active;
+    if found then
+      if v_promo.first_order_only and auth.uid() is not null
+         and exists (select 1 from public.orders where user_id = auth.uid() and id <> v_order_id) then
+        v_disc := 0;   -- not their first order: silently no discount
+      else
+        v_disc := round(v_sub * v_promo.percent / 100.0);
+      end if;
+    end if;
+  end if;
+
+  -- shipping
+  select value->v_method into v_ship_cfg from public.settings where key = 'shipping';
+  v_free_over := nullif(v_ship_cfg->>'free_over_cents','')::int;
+  v_ship := coalesce((v_ship_cfg->>'fee_cents')::int, 0);
+  if v_free_over is not null and (v_sub - v_disc) >= v_free_over then v_ship := 0; end if;
+  if v_sub = 0 then v_ship := 0; end if;
+
+  v_status := case when v_pay = 'instant' then 'paid' else 'awaiting_payment' end;
+
+  update public.orders set
+    subtotal_cents = v_sub,
+    discount_cents = v_disc,
+    shipping_cents = v_ship,
+    total_cents    = v_sub - v_disc + v_ship,
+    promo_code     = case when v_disc > 0 then upper(p->>'promo_code') else null end,
+    status         = v_status,
+    paid           = (v_status = 'paid'),
+    paid_at        = case when v_status = 'paid' then now() else null end
+  where id = v_order_id;
+
+  insert into public.order_events (order_id, status, note)
+  values (v_order_id, 'awaiting_payment', 'Order placed');
+  if v_status = 'paid' then
+    insert into public.order_events (order_id, status, note) values (v_order_id, 'paid', 'Payment received');
+  end if;
+
+  return jsonb_build_object('order_no', v_order_no, 'order_id', v_order_id,
+    'total_cents', v_sub - v_disc + v_ship, 'status', v_status);
+end $$;
+
+-- customer says "I have paid" (EFT)
+create or replace function public.claim_payment(p_order_no text)
+returns void language plpgsql security definer set search_path = public as $$
+declare o record;
+begin
+  select * into o from public.orders where order_no = upper(p_order_no);
+  if not found then raise exception 'Order not found'; end if;
+  if o.user_id is distinct from auth.uid() and not public.is_admin() then
+    raise exception 'Not your order';
+  end if;
+  if o.status <> 'awaiting_payment' then return; end if;
+  update public.orders set status = 'payment_review', updated_at = now() where id = o.id;
+  insert into public.order_events (order_id, status, note)
+  values (o.id, 'payment_review', 'Customer reported payment');
+end $$;
+
+-- guest tracking: order number + the last 4 digits of the phone on the order
+create or replace function public.track_order(p_order_no text, p_phone4 text)
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare o record; result jsonb;
+begin
+  select * into o from public.orders where order_no = upper(trim(p_order_no));
+  if not found then return null; end if;
+  if right(regexp_replace(o.phone,'\D','','g'), 4) <> right(regexp_replace(coalesce(p_phone4,''),'\D','','g'), 4)
+     and o.user_id is distinct from auth.uid() and not public.is_admin() then
+    return null;
+  end if;
+
+  select jsonb_build_object(
+    'order_no', o.order_no, 'status', o.status, 'created_at', o.created_at,
+    'delivery_method', o.delivery_method, 'delivery_eta', o.delivery_eta,
+    'recipient_name', o.recipient_name, 'phone', o.phone, 'address', o.address,
+    'city', o.city, 'province', o.province, 'postal_code', o.postal_code, 'notes', o.notes,
+    'payment_method', o.payment_method, 'payment_ref', o.payment_ref, 'paid', o.paid,
+    'subtotal_cents', o.subtotal_cents, 'discount_cents', o.discount_cents,
+    'shipping_cents', o.shipping_cents, 'total_cents', o.total_cents, 'tracking_no', o.tracking_no,
+    'items', (select coalesce(jsonb_agg(jsonb_build_object('name',name,'size',size,'qty',qty,'unit_price_cents',unit_price_cents)),'[]'::jsonb)
+              from public.order_items where order_id = o.id),
+    'events', (select coalesce(jsonb_agg(jsonb_build_object('status',status,'note',note,'at',created_at) order by created_at),'[]'::jsonb)
+              from public.order_events where order_id = o.id)
+  ) into result;
+  return result;
+end $$;
+
+-- admin: move an order along the ladder
+create or replace function public.set_order_status(p_order_no text, p_status text, p_note text default null, p_tracking text default null)
+returns void language plpgsql security definer set search_path = public as $$
+declare o record;
+begin
+  if not public.is_admin() then raise exception 'Admins only'; end if;
+  select * into o from public.orders where order_no = upper(p_order_no);
+  if not found then raise exception 'Order not found'; end if;
+
+  -- returning stock on a cancellation
+  if p_status = 'cancelled' and o.status <> 'cancelled' then
+    update public.product_variants v set stock = v.stock + i.qty
+      from public.order_items i
+     where i.order_id = o.id and v.product_id = i.product_id and v.size = i.size;
+  end if;
+
+  update public.orders set
+    status      = p_status,
+    paid        = case when p_status in ('paid','packed','shipped','delivered') then true else paid end,
+    paid_at     = case when p_status = 'paid' and paid_at is null then now() else paid_at end,
+    tracking_no = coalesce(nullif(p_tracking,''), tracking_no),
+    updated_at  = now()
+  where id = o.id;
+
+  insert into public.order_events (order_id, status, note) values (o.id, p_status, p_note);
+end $$;
+
+-- ---------------------------------------------------------------------
+-- 6. ROW LEVEL SECURITY
+-- ---------------------------------------------------------------------
+alter table public.profiles         enable row level security;
+alter table public.products         enable row level security;
+alter table public.product_variants enable row level security;
+alter table public.orders           enable row level security;
+alter table public.order_items      enable row level security;
+alter table public.order_events     enable row level security;
+alter table public.payment_proofs   enable row level security;
+alter table public.messages         enable row level security;
+alter table public.promo_codes      enable row level security;
+alter table public.settings         enable row level security;
+
+-- profiles: you see and edit yourself; admins see everyone
+drop policy if exists profiles_self on public.profiles;
+create policy profiles_self on public.profiles
+  for select using (id = auth.uid() or public.is_admin());
+drop policy if exists profiles_update on public.profiles;
+create policy profiles_update on public.profiles
+  for update using (id = auth.uid() or public.is_admin())
+  with check (id = auth.uid() or public.is_admin());
+drop policy if exists profiles_insert on public.profiles;
+create policy profiles_insert on public.profiles
+  for insert with check (id = auth.uid());
+
+-- catalogue: anyone can read the live catalogue, only admins change it
+drop policy if exists products_read on public.products;
+create policy products_read on public.products for select using (is_active or public.is_admin());
+drop policy if exists products_write on public.products;
+create policy products_write on public.products for all using (public.is_admin()) with check (public.is_admin());
+
+drop policy if exists variants_read on public.product_variants;
+create policy variants_read on public.product_variants for select using (true);
+drop policy if exists variants_write on public.product_variants;
+create policy variants_write on public.product_variants for all using (public.is_admin()) with check (public.is_admin());
+
+-- orders: your own only (creation goes through create_order, never a raw insert)
+drop policy if exists orders_read on public.orders;
+create policy orders_read on public.orders for select using (user_id = auth.uid() or public.is_admin());
+drop policy if exists orders_admin_write on public.orders;
+create policy orders_admin_write on public.orders for update using (public.is_admin()) with check (public.is_admin());
+
+drop policy if exists items_read on public.order_items;
+create policy items_read on public.order_items for select using (
+  exists (select 1 from public.orders o where o.id = order_id and (o.user_id = auth.uid() or public.is_admin())));
+
+drop policy if exists events_read on public.order_events;
+create policy events_read on public.order_events for select using (
+  exists (select 1 from public.orders o where o.id = order_id and (o.user_id = auth.uid() or public.is_admin())));
+
+-- proof of payment: the owner uploads, owner and admin read
+drop policy if exists proofs_insert on public.payment_proofs;
+create policy proofs_insert on public.payment_proofs for insert with check (
+  exists (select 1 from public.orders o where o.id = order_id and o.user_id = auth.uid()));
+drop policy if exists proofs_read on public.payment_proofs;
+create policy proofs_read on public.payment_proofs for select using (
+  exists (select 1 from public.orders o where o.id = order_id and (o.user_id = auth.uid() or public.is_admin())));
+
+-- contact form: anyone may write, only admins may read
+drop policy if exists messages_insert on public.messages;
+create policy messages_insert on public.messages for insert with check (true);
+drop policy if exists messages_admin on public.messages;
+create policy messages_admin on public.messages for select using (public.is_admin());
+drop policy if exists messages_update on public.messages;
+create policy messages_update on public.messages for update using (public.is_admin()) with check (public.is_admin());
+
+-- promos and settings: readable by the shop, writable by admins
+drop policy if exists promos_read on public.promo_codes;
+create policy promos_read on public.promo_codes for select using (is_active or public.is_admin());
+drop policy if exists promos_write on public.promo_codes;
+create policy promos_write on public.promo_codes for all using (public.is_admin()) with check (public.is_admin());
+
+drop policy if exists settings_read on public.settings;
+create policy settings_read on public.settings for select using (true);
+drop policy if exists settings_write on public.settings;
+create policy settings_write on public.settings for all using (public.is_admin()) with check (public.is_admin());
+
+-- ---------------------------------------------------------------------
+-- 7. STORAGE BUCKETS
+-- ---------------------------------------------------------------------
+insert into storage.buckets (id, name, public) values ('products','products', true)
+  on conflict (id) do nothing;
+insert into storage.buckets (id, name, public) values ('proofs','proofs', false)
+  on conflict (id) do nothing;
+
+drop policy if exists product_images_read on storage.objects;
+create policy product_images_read on storage.objects
+  for select using (bucket_id = 'products');
+drop policy if exists product_images_write on storage.objects;
+create policy product_images_write on storage.objects
+  for all using (bucket_id = 'products' and public.is_admin())
+  with check (bucket_id = 'products' and public.is_admin());
+
+-- proofs: a signed-in customer writes into their own folder, admins read everything
+drop policy if exists proofs_upload on storage.objects;
+create policy proofs_upload on storage.objects
+  for insert with check (bucket_id = 'proofs' and auth.uid() is not null
+    and (storage.foldername(name))[1] = auth.uid()::text);
+drop policy if exists proofs_view on storage.objects;
+create policy proofs_view on storage.objects
+  for select using (bucket_id = 'proofs'
+    and (public.is_admin() or (storage.foldername(name))[1] = auth.uid()::text));

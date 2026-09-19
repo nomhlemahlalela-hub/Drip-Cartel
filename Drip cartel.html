@@ -228,6 +228,16 @@ footer a:hover{color:var(--cyan)}
 .drawer-h h3{font-size:1.1rem;letter-spacing:.2em;text-transform:uppercase}
 .drawer-b{flex:1;overflow:auto;padding:22px 24px}
 .drawer-f{padding:20px 24px;border-top:1px solid var(--line);background:#050d15}
+.checkout-card{width:min(720px,100%);max-height:92vh;overflow:auto}
+.checkout-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.checkout-grid .full{grid-column:1/-1}
+.checkout-card h3{font-size:1.15rem;letter-spacing:.1em;margin-bottom:6px}
+.checkout-card .hint{color:var(--muted);margin-bottom:18px}
+.track-result{border:1px solid var(--line);padding:16px;margin-top:18px;display:grid;gap:8px}
+.track-result strong{color:var(--cyan);font-family:var(--tech);letter-spacing:.12em}
+.track-events{display:grid;gap:8px;margin-top:8px}
+.track-events div{border-left:2px solid var(--cyan);padding-left:10px;color:#b9cad8}
+@media (max-width:760px){.checkout-grid{grid-template-columns:1fr}.checkout-grid .full{grid-column:auto}}
 .empty{text-align:center;color:var(--muted);padding:50px 10px}
 .empty b{display:block;font-family:var(--tech);letter-spacing:.14em;color:var(--ice);margin-bottom:8px}
 .line-item{display:grid;grid-template-columns:76px 1fr auto;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
@@ -352,6 +362,7 @@ footer a:hover{color:var(--cyan)}
     <nav class="main" id="mainNav" aria-label="Main">
       <a href="#" data-go="home">Home</a>
       <a href="#" data-go="shop">Shop</a>
+      <a href="#" id="trackLink">Track order</a>
       <a href="#" data-go="lookbook">Lookbook</a>
       <a href="#" data-go="news">News</a>
       <a href="#" data-go="about">About</a>
@@ -568,6 +579,50 @@ footer a:hover{color:var(--cyan)}
   </div>
 </div>
 
+<div class="modal" id="checkoutModal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+  <div class="modal-card checkout-card">
+    <button class="x" data-close aria-label="Close checkout">×</button>
+    <div class="auth-main">
+      <h3 id="checkoutTitle">Checkout</h3>
+      <p class="hint">Choose where we should deliver your parcel and how you will pay.</p>
+      <form id="checkoutForm" novalidate>
+        <div class="checkout-grid">
+          <div class="f"><label for="co-name">Full name</label><input id="co-name" required autocomplete="name"><span class="err"></span></div>
+          <div class="f"><label for="co-phone">Phone</label><input id="co-phone" required type="tel" autocomplete="tel"><span class="err"></span></div>
+          <div class="f"><label for="co-email">Email</label><input id="co-email" required type="email" autocomplete="email"><span class="err"></span></div>
+          <div class="f"><label for="co-delivery">Delivery method</label><select id="co-delivery"><option value="door">Courier to my address</option><option value="locker">PUDO locker</option><option value="collect">Collect from Cartel HQ</option></select><span class="err"></span></div>
+          <div class="f full" id="co-address-wrap"><label for="co-address">Delivery address</label><textarea id="co-address" autocomplete="street-address" required></textarea><span class="err"></span></div>
+          <div class="f"><label for="co-city">City</label><input id="co-city" required autocomplete="address-level2"><span class="err"></span></div>
+          <div class="f"><label for="co-province">Province</label><input id="co-province" required autocomplete="address-level1"><span class="err"></span></div>
+          <div class="f"><label for="co-postal">Postal code</label><input id="co-postal" required inputmode="numeric" maxlength="4" autocomplete="postal-code"><span class="err"></span></div>
+          <div class="f"><label for="co-payment">Payment method</label><select id="co-payment"><option value="eft">EFT / bank transfer</option><option value="voucher">Voucher</option><option value="cash">Pay on collection</option></select><span class="err"></span></div>
+          <div class="f" id="co-voucher-wrap" hidden><label for="co-voucher">Voucher last 4 digits</label><input id="co-voucher" inputmode="numeric" maxlength="4"><span class="err"></span></div>
+          <div class="f full"><label for="co-notes">Delivery notes <span class="muted">(optional)</span></label><textarea id="co-notes" placeholder="Gate code, safe place, or collection note"></textarea><span class="err"></span></div>
+        </div>
+        <div class="form-actions"><button class="btn line" type="button" data-close>Cancel</button><button class="btn fill" type="submit">Place order</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="trackModal" role="dialog" aria-modal="true" aria-labelledby="trackTitle">
+  <div class="modal-card checkout-card">
+    <button class="x" data-close aria-label="Close tracking">×</button>
+    <div class="auth-main">
+      <h3 id="trackTitle">Track your order</h3>
+      <p class="hint">Enter your order number and the last four digits of the phone number used at checkout.</p>
+      <form id="trackForm">
+        <div class="checkout-grid">
+          <div class="f"><label for="tr-order">Order number</label><input id="tr-order" placeholder="DC-ABC123" required><span class="err"></span></div>
+          <div class="f"><label for="tr-phone">Phone last 4 digits</label><input id="tr-phone" inputmode="numeric" maxlength="4" required><span class="err"></span></div>
+        </div>
+        <div class="form-actions"><button class="btn fill" type="submit">Find order</button></div>
+      </form>
+      <div id="trackResult"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ===================== DRAWERS ===================== -->
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="cartDrawer" aria-label="Cart">
@@ -588,11 +643,11 @@ footer a:hover{color:var(--cyan)}
    EDIT THESE: your photos, products, prices
    ===================================================================== */
 const IMG = {                          // put your photos in an "images" folder next to this file
-  hero:  'images/hero.jpg',
-  drop:  'images/new-drop.jpg',
-  about: 'images/about.jpg',
-  look1: 'images/look-1.jpg', look2: 'images/look-2.jpg',
-  look3: 'images/look-3.jpg', look4: 'images/look-4.jpg'
+  hero:  'PICTURES/drip/coverpage.jpeg',
+  drop:  'PICTURES/drip/new-drop.jpg',
+  about: 'PICTURES/drip/about.jpg',
+  look1: 'PICTURES/drip/lookbook1.jpeg', look2: 'PICTURES/drip/lookbook2.jpeg',
+  look3: 'PICTURES/drip/lookbook3.jpeg', look4: 'PICTURES/drip/lookbook4.jpeg'
 };
 const RATE = 18.5;                     // ZAR per 1 USD for the $ toggle
 const FREE_SHIP = 800, SHIP_FEE = 80;  // free shipping over R800, otherwise flat fee (ZAR)
@@ -704,6 +759,11 @@ function openAuth(tab, after){
   setTab(tab || 'signup');
   openModal('authModal');
   setTimeout(() => { const i = tab === 'login' ? $('#li-email') : $('#su-name'); i && i.focus(); }, 30);
+}
+function openTrack(){
+  $('#trackResult').innerHTML = '';
+  openModal('trackModal');
+  setTimeout(() => $('#tr-order').focus(), 30);
 }
 function setTab(t){
   $$('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
@@ -902,7 +962,7 @@ function renderCart(){
       <div><span>Shipping</span><span>${t.ship ? money(t.ship) : 'Free'}</span></div>
       <div class="tot"><span>Total</span><span>${money(t.total)}</span></div>
     </div>
-    <button class="btn fill full" id="checkoutBtn">Place order</button>`;
+    <button class="btn fill full" id="checkoutBtn">Continue to checkout</button>`;
 }
 $('#cartBody').addEventListener('click', e => {
   const q = e.target.closest('[data-q]'), r = e.target.closest('[data-rm]'), c = state.user.cart;
@@ -919,12 +979,88 @@ $('#cartFoot').addEventListener('click', e => {
     state.promo = true; renderCart(); toast('DRIP10 applied: 10% off');
   }
   if (e.target.id === 'checkoutBtn'){
-    const u = state.user, t = totals();
-    const order = { id:'DC-' + Math.random().toString(36).slice(2, 8).toUpperCase(), date:Date.now(), total:t.total,
-      items:u.cart.map(l => ({ ...l, name:byId(l.id).name })), address:u.address };
-    u.orders.unshift(order); u.cart = []; state.promo = false; saveUser(); renderCart(); closeDrawers();
-    toast(`Order ${order.id} placed. We will contact you to confirm payment.`);
+    openCheckout();
   }
+});
+
+function openCheckout(){
+  const u = state.user;
+  $('#co-name').value = u.name || '';
+  $('#co-phone').value = u.phone || '';
+  $('#co-email').value = u.email || '';
+  $('#co-address').value = u.address || '';
+  $('#co-city').value = u.city || '';
+  $('#co-province').value = u.province || '';
+  $('#co-postal').value = u.postal || '';
+  $('#co-delivery').value = 'door';
+  $('#co-payment').value = 'eft';
+  $('#co-voucher').value = '';
+  $('#co-notes').value = '';
+  updateCheckoutFields();
+  openModal('checkoutModal');
+}
+function updateCheckoutFields(){
+  const collect = $('#co-delivery').value === 'collect';
+  $('#co-address-wrap').hidden = collect;
+  $('#co-address').required = !collect;
+  $('#co-city').required = !collect;
+  $('#co-province').required = !collect;
+  $('#co-postal').required = !collect;
+  const voucher = $('#co-payment').value === 'voucher';
+  $('#co-voucher-wrap').hidden = !voucher;
+  $('#co-voucher').required = voucher;
+}
+$('#co-delivery').addEventListener('change', updateCheckoutFields);
+$('#co-payment').addEventListener('change', updateCheckoutFields);
+$('#checkoutForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const fields = [$('#co-name'), $('#co-phone'), $('#co-email'), $('#co-address'), $('#co-city'), $('#co-province'), $('#co-postal'), $('#co-voucher')];
+  let ok = true;
+  fields.forEach(field => {
+    if (field.hidden || field.closest('.f').hidden || !field.required) return;
+    const message = field.type === 'email' && !EMAIL.test(field.value.trim()) ? 'Enter a valid email address.'
+      : !field.value.trim() ? 'This field is required.'
+      : field.id === 'co-phone' && field.value.replace(/\D/g, '').length < 9 ? 'Enter a valid phone number.'
+      : field.id === 'co-postal' && !/^\d{4}$/.test(field.value.trim()) ? 'Enter a 4-digit postal code.'
+      : field.id === 'co-voucher' && !/^\d{4}$/.test(field.value.trim()) ? 'Enter the last 4 digits.' : '';
+    ok = fieldErr(field, message) && ok;
+  });
+  if (!ok) return;
+  const u = state.user, t = totals();
+  const id = 'DC-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+  const order = {
+    id, date:Date.now(), total:t.total, status:'awaiting_payment', paid:false,
+    paymentMethod:$('#co-payment').value, deliveryMethod:$('#co-delivery').value,
+    phone:$('#co-phone').value.trim(), address:$('#co-address').value.trim(), city:$('#co-city').value.trim(),
+    items:u.cart.map(l => ({ ...l, name:byId(l.id).name })), events:[{ status:'awaiting_payment', note:'Order placed', date:Date.now() }]
+  };
+  u.orders.unshift(order); u.cart = []; state.promo = false;
+  Object.assign(u, { name:$('#co-name').value.trim(), phone:order.phone, email:$('#co-email').value.trim(), address:order.address, city:order.city, province:$('#co-province').value.trim(), postal:$('#co-postal').value.trim() });
+  saveUser(); closeModal('checkoutModal'); renderCart(); renderProfile();
+  toast(`Order ${id} placed. Use Track order to follow it.`);
+  $('#tr-order').value = id; $('#tr-phone').value = order.phone.replace(/\D/g, '').slice(-4);
+});
+
+function renderTrackResult(order){
+  const status = order.status === 'awaiting_payment' ? 'Awaiting payment' : order.status;
+  $('#trackResult').innerHTML = `<div class="track-result">
+    <strong>${esc(order.id)} · ${esc(status)}</strong>
+    <span>${new Date(order.date).toLocaleString('en-ZA')} · ${money(order.total)}</span>
+    <span>${order.deliveryMethod === 'collect' ? 'Collect from Cartel HQ' : `Delivery to ${esc(order.city || 'your address')}`}</span>
+    <div class="track-events">${(order.events || []).map(event => `<div><b>${esc(event.status)}</b> · ${esc(event.note)}<br><small>${new Date(event.date).toLocaleString('en-ZA')}</small></div>`).join('')}</div>
+    ${!order.paid && order.paymentMethod !== 'cash' ? `<button class="btn line sm" id="claimLocalPayment" type="button">I have paid</button>` : ''}
+  </div>`;
+  $('#claimLocalPayment')?.addEventListener('click', () => {
+    order.status = 'payment_review'; order.events.push({ status:'payment_review', note:'Customer reported payment', date:Date.now() });
+    saveUser(); renderTrackResult(order); toast('Payment marked for review.');
+  });
+}
+$('#trackForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const no = $('#tr-order').value.trim().toUpperCase(), phone = $('#tr-phone').value.replace(/\D/g, '').slice(-4);
+  const order = Object.values(users).flatMap(user => user.orders || []).find(o => o.id === no && (o.phone || '').replace(/\D/g, '').slice(-4) === phone);
+  if (!order) return $('#trackResult').innerHTML = '<div class="track-result"><strong>Order not found</strong><span>Check the order number and phone digits and try again.</span></div>';
+  renderTrackResult(order);
 });
 
 /* ---------- profile ---------- */
@@ -940,8 +1076,9 @@ function renderProfile(){
       <button class="btn line sm full" id="editProf">Edit profile</button>
       <div class="h-sm">Orders</div>
       ${u.orders.length ? u.orders.map(o => `<div class="order"><b><span>${o.id}</span><span>${money(o.total)}</span></b>
-        <small>${new Date(o.date).toLocaleDateString('en-ZA')} · ${o.items.reduce((s,i)=>s+i.qty,0)} item(s)</small>
-        <small>${o.items.map(i => `${esc(i.name)} (${esc(i.size)}) ×${i.qty}`).join(', ')}</small></div>`).join('') : '<p style="color:var(--muted)">No orders yet.</p>'}
+        <small>${new Date(o.date).toLocaleDateString('en-ZA')} · ${o.items.reduce((s,i)=>s+i.qty,0)} item(s) · ${esc(o.status || 'Placed')}</small>
+        <small>${o.items.map(i => `${esc(i.name)} (${esc(i.size)}) ×${i.qty}`).join(', ')}</small>
+        <button class="link-btn" data-track-order="${esc(o.id)}" type="button">Track this order</button></div>`).join('') : '<p style="color:var(--muted)">No orders yet.</p>'}
       <div class="h-sm">Account</div><button class="link-btn" id="signOut">Sign out</button>`;
   } else {
     html += `<form id="editForm" novalidate>
@@ -958,6 +1095,10 @@ $('#profBody').addEventListener('click', e => {
   if (e.target.id === 'editProf'){ state.editing = true; renderProfile(); }
   if (e.target.id === 'cancelEdit'){ state.editing = false; renderProfile(); }
   if (e.target.id === 'signOut') signOut();
+  if (e.target.closest('[data-track-order]')){
+    const order = state.user.orders.find(o => o.id === e.target.closest('[data-track-order]').dataset.trackOrder);
+    if (order){ $('#tr-order').value = order.id; $('#tr-phone').value = ''; openTrack(); }
+  }
 });
 $('#profBody').addEventListener('submit', e => {
   e.preventDefault();
@@ -997,6 +1138,7 @@ document.addEventListener('click', e => {
 $('#scrim').addEventListener('click', closeDrawers);
 $('#cartBtn').addEventListener('click', () => requireAuth(() => { renderCart(); openDrawer('cartDrawer'); }));
 $('#profBtn').addEventListener('click', () => requireAuth(() => { state.editing = false; renderProfile(); openDrawer('profDrawer'); }));
+$('#trackLink').addEventListener('click', e => { e.preventDefault(); openTrack(); });
 $('#wishBtn').addEventListener('click', () => go('shop', { filter:'saved' }));
 $('#burger').addEventListener('click', () => { const o = $('#mainNav').classList.toggle('open'); $('#burger').setAttribute('aria-expanded', o); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape'){ if ($('#authModal').classList.contains('open')) closeModal('authModal'); closeDrawers(); closeMenu(); } });
