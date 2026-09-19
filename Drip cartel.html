@@ -2,432 +2,1019 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DRIP CARTEL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DRIP CARTEL – It's More Than Just a Brand</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Cinzel+Decorative:wght@700;900&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#ffffff;
-    --surface:#f6f4f0;
-    --ink:#141414;
-    --ink-soft:#6b6b67;
-    --line:#e7e4dd;
-    --beige:#cdbfa6;
-    --gold:#e2a400;
-  }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  html{scroll-behavior:smooth;}
-  body{
-    background:var(--bg);
-    color:var(--ink);
-    font-family:'Inter',sans-serif;
-    -webkit-font-smoothing:antialiased;
-  }
-  a{color:inherit; text-decoration:none;}
-  button{font-family:inherit; cursor:pointer;}
-  img{display:block; max-width:100%;}
-  .wrap{max-width:1320px; margin:0 auto; padding:0 40px;}
-  svg{display:block;}
+:root{
+  --bg:#03080d; --bg2:#071119; --bg3:#0a1824; --line:#0f2f44;
+  --cyan:#3db8e8; --blue:#0a56b0; --ice:#e8f3fc; --muted:#7f97a8;
+  --cream:#f5f3ee; --ink:#0a0a0a; --bad:#ff6b6b; --ok:#4ade80;
+  --display:'Cinzel Decorative',serif; --tech:'Orbitron',sans-serif; --body:'Barlow Condensed',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{background:var(--bg);color:var(--ice);font-family:var(--body);font-size:1.15rem;line-height:1.4;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--tech);font-weight:700;line-height:1.05}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input,select,textarea{font:inherit;color:inherit}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
 
-  /* HEADER */
-  .topbar{ border-bottom:1px solid var(--line); }
-  .topbar .wrap{ display:flex; align-items:center; justify-content:space-between; height:68px; }
-  .logo{ font-size:19px; font-weight:800; letter-spacing:-0.02em; }
-  .headicons{ display:flex; align-items:center; gap:22px; }
-  .headicons button{ background:none; border:none; color:var(--ink); display:flex; }
-  .navbar{ border-bottom:1px solid var(--line); }
-  .navbar .wrap{ display:flex; align-items:center; justify-content:center; gap:36px; height:52px; }
-  .navbar a{ font-size:12.5px; font-weight:600; letter-spacing:0.06em; color:var(--ink); }
-  .navbar a:hover{ color:var(--ink-soft); }
-  .navbar a.sale{ color:#b23a2f; }
+/* placeholders: a photo (set via --img) sits on top of a branded fallback */
+.ph{background-color:#0a1a26;background-repeat:no-repeat;background-position:center;background-size:cover,84px,cover;
+  background-image:var(--img,none),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 90 90'%3E%3Cpolygon points='45,4 82,24 82,66 45,86 8,66 8,24' fill='none' stroke='%233db8e8' stroke-opacity='.35' stroke-width='2'/%3E%3Ctext x='45' y='53' font-size='24' text-anchor='middle' fill='%233db8e8' fill-opacity='.45' font-family='Arial' font-weight='700'%3EDC%3C/text%3E%3C/svg%3E"),
+  linear-gradient(135deg,#0d2a3d 0%,#050d14 75%)}
+.ph0{background-color:#0a1a26;background-position:center;background-size:cover;background-repeat:no-repeat;
+  background-image:var(--img,none),linear-gradient(135deg,#0d2a3d 0%,#050d14 75%)}
 
-  /* HERO */
-  .hero{ position:relative; }
-  .hero-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; height:480px; }
-  .hero-panel{ position:relative; overflow:hidden; }
-  .hero-panel .ph{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
-  .hero-panel .ph span{ font-weight:800; font-size:15px; letter-spacing:0.04em; opacity:0.55; transform:rotate(-8deg); }
-  .p1{ background:linear-gradient(155deg,#2b2b2b,#0c0c0c); }
-  .p2{ background:linear-gradient(160deg,#3a3a3a,#161616); }
-  .p3{ background:linear-gradient(160deg,var(--beige),#a99c82); }
-  .p3 .ph span{ color:#3a3122; opacity:.7; }
-  .p1 .ph span, .p2 .ph span{ color:#f2f2f2; }
+/* ---------- announcement + header ---------- */
+.ann{background:#00b8d9;color:#031018;font-family:var(--tech);font-weight:700;font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;
+  display:flex;justify-content:center;flex-wrap:wrap;gap:6px 44px;padding:12px 16px;text-align:center}
+header.top{position:sticky;top:0;z-index:60;background:rgba(3,8,13,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top-in{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 clamp(16px,2vw,28px);height:72px}
+.logo{display:flex;align-items:center;gap:12px}
+.logo svg{width:40px;height:44px}
+.logo b{display:block;font-family:var(--display);font-weight:700;font-size:1.2rem;letter-spacing:.14em;line-height:1}
+.logo small{display:block;font-family:var(--tech);font-size:.5rem;letter-spacing:.5em;color:var(--cyan);margin-top:4px}
+nav.main{display:flex;gap:34px}
+nav.main a,.nav-link{font-family:var(--tech);font-weight:700;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:#cfe0ee;padding:8px 0;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;cursor:pointer}
+nav.main a:hover,nav.main a.active{color:var(--cyan);border-color:var(--cyan)}
+.tools{display:flex;align-items:center;gap:8px}
+.cur{display:flex;border:1px solid var(--line);margin-right:6px}
+.cur button{width:34px;height:32px;font-family:var(--tech);font-size:.7rem;color:var(--muted)}
+.cur button.on{background:rgba(61,184,232,.14);color:var(--cyan);outline:1px solid var(--cyan);outline-offset:-1px}
+.ico{position:relative;width:42px;height:42px;display:grid;place-items:center;color:var(--ice);transition:color .2s}
+.ico:hover{color:var(--cyan)}
+.ico svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.badge-n{position:absolute;top:2px;right:0;min-width:18px;height:18px;border-radius:9px;background:var(--cyan);color:#03121c;font-family:var(--tech);font-size:.6rem;font-weight:700;display:grid;place-items:center;padding:0 4px}
+.av{width:32px;height:32px;border-radius:50%;background:var(--cyan);color:#03121c;font-family:var(--tech);font-weight:700;font-size:.8rem;display:grid;place-items:center}
+.burger{display:none}
 
-  .hero-copy{
-    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-    text-align:center; color:#fff; z-index:2; width:100%;
-  }
-  .hero-copy h1{
-    font-size:clamp(24px,3.4vw,42px); font-weight:800; line-height:1.15; letter-spacing:-0.01em;
-    text-shadow:0 2px 18px rgba(0,0,0,0.35);
-  }
-  .hero-ctas{ display:flex; gap:12px; justify-content:center; margin-top:26px; }
-  .hbtn{
-    font-size:12.5px; font-weight:700; letter-spacing:0.05em; padding:14px 26px; border-radius:2px; border:1.5px solid transparent;
-  }
-  .hbtn.solid{ background:#fff; color:#141414; }
-  .hbtn.solid:hover{ background:#eee; }
-  .hbtn.line{ background:rgba(20,20,20,0.35); color:#fff; border-color:rgba(255,255,255,0.7); }
-  .hbtn.line:hover{ background:rgba(20,20,20,0.55); }
+/* ---------- buttons ---------- */
+.btn{display:inline-block;font-family:var(--tech);font-weight:700;font-size:.85rem;letter-spacing:.22em;text-transform:uppercase;padding:18px 34px;border:2px solid transparent;transition:transform .2s,background .2s,color .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn.fill{background:var(--cyan);color:#03121c}
+.btn.fill:hover{background:#6ccbf2}
+.btn.line{border-color:#fff;color:#fff}
+.btn.line:hover{background:#fff;color:#03121c}
+.btn.blue{background:var(--blue);color:#fff}
+.btn.sm{padding:14px 26px;font-size:.75rem}
+.btn.full{width:100%;text-align:center}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
+.btn-sm{background:#000;color:#fff;font-family:var(--tech);font-weight:700;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;padding:11px 16px;transition:background .2s}
+.btn-sm:hover{background:var(--blue)}
 
-  .dots{ display:flex; justify-content:center; gap:8px; padding:18px 0; }
-  .dots span{ width:6px; height:6px; border-radius:50%; background:var(--line); }
-  .dots span.active{ background:var(--ink); }
+/* ---------- hero ---------- */
+.hero{position:relative;min-height:calc(100vh - 110px);min-height:calc(100svh - 110px);display:flex;align-items:center;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,8,13,.94) 0%,rgba(3,8,13,.45) 60%,rgba(3,8,13,.7) 100%),linear-gradient(0deg,rgba(3,8,13,.85),transparent 40%)}
+.hero-in{position:relative;padding:60px clamp(20px,8vw,120px);animation:rise .9s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.tag{display:inline-flex;align-items:center;gap:14px;font-family:var(--tech);font-size:.68rem;letter-spacing:.3em;color:var(--cyan);text-transform:uppercase}
+.tag span{border:1px solid var(--cyan);padding:9px 14px}
+.tag::after{content:'';width:60px;height:1px;background:var(--cyan)}
+.hero h1{margin:26px 0 30px;display:flex;flex-direction:column;align-items:flex-start;width:fit-content}
+.hero .drip{font-family:var(--display);font-weight:900;font-size:clamp(5rem,15vw,10.5rem);line-height:.9;letter-spacing:.02em}
+.hero .est{display:flex;align-items:center;gap:14px;align-self:stretch;font-family:var(--tech);font-weight:400;font-size:.62rem;letter-spacing:.42em;color:var(--cyan);text-transform:uppercase;margin:10px 0 4px}
+.hero .est::before,.hero .est::after{content:'';flex:1;height:1px;background:rgba(61,184,232,.5)}
+.hero .cartel{font-family:var(--tech);font-weight:500;font-size:clamp(3rem,9.6vw,6.6rem);letter-spacing:.14em;line-height:1;color:transparent;-webkit-text-stroke:2px var(--cyan)}
+.hero-btns{display:flex;flex-wrap:wrap;gap:14px}
+.stats{display:flex;gap:44px;margin-top:38px}
+.stats div{font-family:var(--tech)}
+.stats dt{font-size:2rem;font-weight:400;color:var(--cyan);line-height:1}
+.stats dd{font-size:.58rem;letter-spacing:.3em;color:#3f7d9c;margin-top:6px;text-transform:uppercase}
 
-  /* TRUST BAR */
-  .trust{ border-bottom:1px solid var(--line); }
-  .trust .wrap{ display:grid; grid-template-columns:repeat(4,1fr); padding:30px 40px; }
-  .trust-item{ display:flex; align-items:center; gap:14px; }
-  .trust-item svg{ flex:none; color:var(--ink); }
-  .trust-item .t{ font-size:12.5px; font-weight:700; letter-spacing:0.02em; }
-  .trust-item .s{ font-size:12px; color:var(--ink-soft); margin-top:2px; }
+/* ---------- section heads ---------- */
+.sec{padding:0 0 clamp(50px,7vw,90px)}
+.sec-head{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:clamp(36px,5vw,60px) clamp(16px,2vw,28px) 34px;border-top:1px solid var(--line)}
+.sec-head h2,.page-title{font-size:clamp(2.2rem,5.5vw,3.8rem);letter-spacing:.06em;font-weight:900}
+.sec-head h2 span,.page-title span{color:var(--cyan);font-weight:700}
+.sec-head .btn{padding:16px 30px}
 
-  /* CATEGORY */
-  .section{ padding:56px 0; }
-  .section-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
-  .section-head h2{ font-size:16px; font-weight:800; letter-spacing:0.04em; }
-  .section-head .view-all{ font-size:12.5px; font-weight:700; display:flex; align-items:center; gap:6px; }
-  .cat-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:18px; }
-  .cat-card{ display:block; }
-  .cat-card .thumb{
-    aspect-ratio:1/1.05; border-radius:6px; overflow:hidden; margin-bottom:12px; position:relative;
-  }
-  .cat-card .thumb .ph{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
-  .cat-card .thumb .ph span{ font-weight:800; font-size:11px; letter-spacing:0.04em; color:#fff; opacity:.6; transform:rotate(-6deg); }
-  .c1{ background:linear-gradient(155deg,#2c2c2c,#0d0d0d); }
-  .c2{ background:linear-gradient(150deg,#3d3d3d,#161616); }
-  .c3{ background:linear-gradient(150deg,#232323,#050505); }
-  .c4{ background:linear-gradient(150deg,#4a4a4a,#1c1c1c); }
-  .c5{ background:linear-gradient(150deg,#2f2f2f,#0f0f0f); }
-  .cat-card .name{ font-size:12.5px; font-weight:700; letter-spacing:0.03em; }
-  .cat-card .sub{ font-size:11.5px; color:var(--ink-soft); margin-top:2px; }
+/* ---------- editorial new drop ---------- */
+.editorial{background:var(--cream);color:var(--ink);margin:0 clamp(16px,2vw,28px)}
+.ed-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 28px;border-bottom:1px solid #e0ddd3}
+.ed-logo{font-family:var(--display);font-weight:900;font-size:1.25rem;letter-spacing:.14em}
+.ed-logo em{font-style:normal;color:var(--cyan)}
+.ed-bar small{display:block;font-family:var(--tech);font-size:.5rem;letter-spacing:.3em;color:#8a8a8a;margin-top:6px}
+.ed-tag{font-family:var(--tech);font-size:.55rem;letter-spacing:.28em;color:var(--cyan);border:1px solid #bfe4f5;padding:8px 14px}
+.ed-body{display:grid;grid-template-columns:1.15fr 1fr;min-height:620px}
+.ed-img{position:relative}
+.ed-img::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 62%,var(--cream) 100%)}
+.dot{position:absolute;z-index:2;width:30px;height:30px;border-radius:50%;background:var(--cyan);color:#03121c;font-family:var(--tech);font-weight:700;font-size:.58rem;display:grid;place-items:center;
+  box-shadow:0 0 0 6px rgba(61,184,232,.3);transition:transform .2s,box-shadow .2s;transform:translate(-50%,-50%)}
+.dot.on{transform:translate(-50%,-50%) scale(1.25);box-shadow:0 0 0 10px rgba(61,184,232,.35)}
+.ed-list{display:flex;flex-direction:column;justify-content:center;padding:24px clamp(20px,4vw,56px)}
+.ed-item{padding:26px 0;border-bottom:1px solid #dcd9cf;max-width:440px}
+.ed-item:last-child{border:0}
+.ed-item .k{font-family:var(--tech);font-size:.55rem;letter-spacing:.3em;color:#a0a0a0;text-transform:uppercase}
+.ed-item h3{font-family:var(--body);font-weight:700;font-size:1.9rem;line-height:1.05;margin:8px 0 6px;color:#0a0a0a;text-transform:none}
+.ed-item p{color:#8b8b8b;font-size:1rem;line-height:1.25;max-width:300px}
+.ed-buy{display:flex;align-items:center;gap:18px;margin-top:16px;flex-wrap:wrap}
+.big{font-family:var(--tech);font-weight:900;font-size:2.6rem;line-height:1;display:flex;align-items:baseline;gap:6px;color:#000}
+.big i{font-style:normal;font-size:.7rem;font-weight:700;letter-spacing:.1em}
+.big u{text-decoration:none;font-size:.8rem;font-weight:700}
+.fit{margin:0 clamp(16px,2vw,28px);background:#0a0f12;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:22px 28px}
+.fit h3{font-family:var(--body);font-size:1.4rem;letter-spacing:.06em;text-transform:uppercase}
+.fit small{color:#5d6d78;font-family:var(--tech);font-size:.6rem;letter-spacing:.12em}
+.fit-price{text-align:center;font-family:var(--tech)}
+.fit-price b{font-size:2rem;color:var(--cyan);display:block;line-height:1}
+.strip{margin:0 clamp(16px,2vw,28px);background:var(--cream);color:#8b8b8b;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px 28px;font-family:var(--tech);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase}
+.strip .szs{display:flex;align-items:center;gap:8px}
+.strip .szs span{width:26px;height:26px;display:grid;place-items:center;border:1px solid #111;color:#111;font-weight:700;font-size:.6rem;letter-spacing:0}
+.strip .szs span.x{border-color:#ddd;color:#ccc}
+.strip b{color:#0a0a0a}
 
-  /* FILTER BAR */
-  .filterbar{
-    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
-    padding:18px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
-  }
-  .filterbar-left{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
-  .filter-btn{
-    display:flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:2px;
-    background:none; font-size:12.5px; font-weight:600; padding:9px 14px; color:var(--ink);
-  }
-  .count{ font-size:12.5px; color:var(--ink-soft); }
-  .chip{
-    display:flex; align-items:center; gap:6px; background:var(--surface); border-radius:2px;
-    font-size:12px; padding:7px 10px; font-weight:500;
-  }
-  .chip button{ background:none; border:none; font-size:13px; line-height:1; color:var(--ink-soft); }
-  .clear-all{ font-size:12px; font-weight:600; text-decoration:underline; color:var(--ink-soft); }
-  .filterbar-right{ display:flex; align-items:center; gap:10px; }
-  .sort{
-    display:flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:2px;
-    padding:9px 14px; font-size:12.5px; font-weight:600;
-  }
-  .view-toggle{ display:flex; gap:8px; }
-  .view-toggle button{ border:1px solid var(--line); background:none; border-radius:2px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; color:var(--ink); }
+/* ---------- lookbook ---------- */
+.look{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:0 clamp(16px,2vw,28px)}
+.look button{position:relative;aspect-ratio:3/4;overflow:hidden;text-align:left}
+.look button::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(3,8,13,.85),transparent 55%);transition:opacity .2s}
+.look span{position:absolute;left:18px;bottom:16px;z-index:2;font-family:var(--tech);font-weight:700;font-size:.72rem;letter-spacing:.24em;text-transform:uppercase}
+.look button:hover span{color:var(--cyan)}
 
-  /* PRODUCT GRID */
-  .pgrid{ display:grid; grid-template-columns:repeat(4,1fr); gap:24px; padding-top:32px; }
-  .pcard{ display:block; }
-  .pcard .thumb{
-    aspect-ratio:3/3.7; border-radius:6px; overflow:hidden; margin-bottom:14px; position:relative;
-  }
-  .pcard .thumb .ph{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
-  .pcard .thumb .ph span{ font-weight:800; font-size:13px; letter-spacing:0.03em; color:#fff; opacity:.55; transform:rotate(-8deg); }
-  .g1{ background:linear-gradient(155deg,#2a2a2a,#0b0b0b); }
-  .g2{ background:linear-gradient(155deg,#333,#111); }
-  .g3{ background:linear-gradient(160deg,var(--beige),#a89b81); }
-  .g3 .ph span{ color:#3a3122; opacity:.7; }
-  .g4{ background:linear-gradient(155deg,#2a2a2a,#050505); }
-  .wishlist{
-    position:absolute; top:12px; right:12px; width:32px; height:32px; border-radius:50%;
-    background:rgba(255,255,255,0.92); display:flex; align-items:center; justify-content:center; color:var(--ink);
-  }
-  .sale-tag{
-    position:absolute; top:12px; left:12px; background:#141414; color:#fff; font-size:10.5px; font-weight:700;
-    letter-spacing:0.05em; padding:5px 9px; border-radius:2px;
-  }
-  .pcard .cat{ font-size:11px; font-weight:700; letter-spacing:0.04em; color:var(--ink-soft); text-transform:uppercase; margin-bottom:4px; }
-  .pcard .name{ font-size:14px; font-weight:700; margin-bottom:6px; }
-  .stars{ display:flex; align-items:center; gap:5px; margin-bottom:8px; }
-  .stars .s-row{ display:flex; gap:1px; }
-  .stars .count{ font-size:11.5px; color:var(--ink-soft); }
-  .price-row{ display:flex; align-items:center; gap:8px; margin-bottom:12px; }
-  .price{ font-size:14px; font-weight:800; }
-  .price.strike{ color:var(--ink-soft); text-decoration:line-through; font-weight:500; font-size:12.5px; }
-  .save{ font-size:11.5px; color:#b23a2f; font-weight:600; }
-  .add-btn{
-    width:100%; background:#141414; color:#fff; border:none; padding:12px; font-size:12px;
-    font-weight:700; letter-spacing:0.05em; border-radius:2px;
-  }
-  .add-btn:hover{ background:#2a2a2a; }
+/* ---------- brand statement ---------- */
+.statement{text-align:center;padding:clamp(70px,10vw,130px) 20px;background:radial-gradient(ellipse at center,#06141f 0%,var(--bg) 70%);border-top:1px solid var(--line)}
+.statement .k{font-family:var(--tech);font-size:.68rem;letter-spacing:.42em;color:#3f7d9c;text-transform:uppercase}
+.statement h2{font-family:var(--display);font-weight:900;font-size:clamp(2.2rem,6.4vw,4.6rem);line-height:1.05;margin:24px 0}
+.statement h2 span{display:block;font-family:var(--tech);font-weight:500;letter-spacing:.14em;font-size:.86em;color:transparent;-webkit-text-stroke:1.5px var(--cyan)}
+.statement hr{width:80px;border:0;height:2px;background:var(--cyan);margin:0 auto}
 
-  @media (max-width:980px){
-    .navbar .wrap{ flex-wrap:wrap; height:auto; padding:12px 40px; gap:16px 22px; }
-    .hero-grid{ grid-template-columns:1fr; height:auto; }
-    .hero-panel{ height:220px; }
-    .trust .wrap{ grid-template-columns:repeat(2,1fr); gap:20px; }
-    .cat-grid{ grid-template-columns:repeat(2,1fr); }
-    .pgrid{ grid-template-columns:repeat(2,1fr); }
-  }
+/* ---------- news ---------- */
+.news{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:0 clamp(16px,2vw,28px)}
+.news article{background:var(--bg2);border:1px solid var(--line);padding:28px;display:flex;flex-direction:column;gap:12px;transition:border-color .2s}
+.news article:hover{border-color:var(--cyan)}
+.news .k{font-family:var(--tech);font-size:.58rem;letter-spacing:.3em;color:var(--cyan)}
+.news h3{font-family:var(--body);font-size:1.7rem;line-height:1.05;letter-spacing:.02em}
+.news p{color:var(--muted)}
+
+/* ---------- about ---------- */
+.about{display:grid;grid-template-columns:.95fr 1.4fr;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:linear-gradient(90deg,var(--bg),#050e16)}
+.about .pic{min-height:560px;filter:grayscale(1)}
+.about .txt{padding:clamp(36px,6vw,80px) clamp(20px,6vw,90px);align-self:center}
+.eyebrow{font-family:var(--tech);font-size:.68rem;letter-spacing:.42em;color:var(--cyan);text-transform:uppercase}
+.about h2{font-size:clamp(2.4rem,6vw,4.4rem);font-weight:500;letter-spacing:.06em;margin:14px 0 18px}
+.about h2 span{color:var(--cyan);display:block}
+.about .rule{width:60px;height:3px;background:var(--cyan);margin-bottom:22px}
+.about .sub{font-family:var(--tech);font-size:clamp(.8rem,1.6vw,1.05rem);letter-spacing:.3em;color:var(--cyan);margin-bottom:20px;text-transform:uppercase}
+.about p.copy{color:#b9cad8;max-width:680px;line-height:1.75}
+.vals{display:grid;grid-template-columns:1fr 1fr;gap:18px 30px;margin:30px 0 34px;max-width:640px}
+.vals div{border-left:3px solid var(--cyan);padding-left:16px}
+.vals b{display:block;font-family:var(--tech);font-size:1rem;letter-spacing:.14em;text-transform:uppercase}
+.vals small{font-family:var(--tech);font-size:.58rem;letter-spacing:.24em;color:var(--cyan);text-transform:uppercase}
+
+/* ---------- contact + footer ---------- */
+.contact{display:grid;grid-template-columns:1fr 1.2fr;gap:clamp(24px,5vw,70px);padding:clamp(40px,6vw,80px) clamp(16px,2vw,28px)}
+.contact h2{font-size:clamp(2rem,4.5vw,3rem);font-weight:900;letter-spacing:.06em;margin-bottom:14px}
+.contact h2 span{color:var(--cyan)}
+.contact p{color:var(--muted);max-width:420px}
+.contact .info{margin-top:22px;display:grid;gap:8px;font-family:var(--tech);font-size:.7rem;letter-spacing:.16em;color:#b9cad8}
+footer{border-top:1px solid var(--line);padding:34px clamp(16px,2vw,28px);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;color:var(--muted);font-family:var(--tech);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase}
+footer nav{display:flex;gap:22px;flex-wrap:wrap}
+footer a:hover{color:var(--cyan)}
+
+/* ---------- forms ---------- */
+.f{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.f label,.f .lab{font-family:var(--tech);font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:#9fb5c6}
+.f input:not([type=radio]):not([type=checkbox]),.f select,.f textarea{background:#040c13;border:1px solid #1a3a50;padding:13px 14px;width:100%;font-size:1.1rem;transition:border-color .2s}
+.f textarea{resize:vertical;min-height:84px}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(61,184,232,.18)}
+.f .err{color:var(--bad);font-size:.95rem;min-height:0}
+.f.bad input,.f.bad select,.f.bad textarea{border-color:var(--bad)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip input{position:absolute;opacity:0;pointer-events:none}
+.chip span{display:grid;place-items:center;min-width:52px;height:44px;padding:0 12px;border:1px solid #1a3a50;font-family:var(--tech);font-size:.75rem;font-weight:700;cursor:pointer;transition:.2s}
+.chip input:checked+span{background:var(--cyan);color:#03121c;border-color:var(--cyan)}
+.chip input:focus-visible+span{outline:2px solid var(--cyan);outline-offset:2px}
+.check{display:flex;gap:10px;align-items:flex-start;color:#b9cad8;font-size:1rem}
+.check input{margin-top:5px;accent-color:var(--cyan);width:16px;height:16px}
+
+/* ---------- modal ---------- */
+.modal{position:fixed;inset:0;z-index:100;display:none;place-items:center;background:rgba(1,5,9,.86);padding:16px;overflow:auto}
+.modal.open{display:grid}
+.modal-card{position:relative;display:grid;grid-template-columns:330px 1fr;width:min(920px,100%);background:var(--bg2);border:1px solid var(--line);animation:rise .3s ease both}
+.x{position:absolute;top:10px;right:10px;width:40px;height:40px;display:grid;place-items:center;font-size:1.6rem;color:var(--muted);z-index:3}
+.x:hover{color:var(--cyan)}
+.auth-side{position:relative;padding:34px;display:flex;flex-direction:column;justify-content:flex-end;min-height:520px}
+.auth-side::before{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(3,8,13,.95),rgba(3,8,13,.3))}
+.auth-side>*{position:relative}
+.auth-side .drip{font-family:var(--display);font-weight:900;font-size:3.4rem;line-height:.95}
+.auth-side .cartel{font-family:var(--tech);font-size:1.5rem;letter-spacing:.14em;color:transparent;-webkit-text-stroke:1.2px var(--cyan)}
+.auth-side ul{list-style:none;margin-top:22px;display:grid;gap:8px;color:#b9cad8;font-size:1.05rem}
+.auth-side li::before{content:'';display:inline-block;width:8px;height:8px;background:var(--cyan);margin-right:10px}
+.auth-main{padding:34px clamp(20px,4vw,44px)}
+.tabs{display:flex;gap:26px;border-bottom:1px solid var(--line);margin-bottom:24px;padding-right:36px}
+.tabs button{font-family:var(--tech);font-weight:700;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;padding:0 0 14px;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button.on{color:var(--cyan);border-color:var(--cyan)}
+.steps{display:flex;gap:10px;margin-bottom:22px;font-family:var(--tech);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:#4d6577}
+.steps span{flex:1;padding-top:10px;border-top:3px solid #16324a}
+.steps span.on{color:var(--cyan);border-color:var(--cyan)}
+.form-actions{display:flex;gap:12px;margin-top:8px}
+.form-actions .btn{flex:1;padding:16px 20px}
+.auth-main h3{font-size:1.15rem;letter-spacing:.1em;margin-bottom:6px}
+.auth-main .hint{color:var(--muted);margin-bottom:20px}
+
+/* ---------- drawers ---------- */
+.scrim{position:fixed;inset:0;background:rgba(1,5,9,.7);z-index:80;opacity:0;visibility:hidden;transition:opacity .3s,visibility 0s .3s}
+.scrim.open{opacity:1;visibility:visible;transition:opacity .3s}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(460px,100%);background:#06101a;border-left:1px solid var(--line);z-index:90;display:flex;flex-direction:column;transform:translateX(100%);visibility:hidden;transition:transform .3s,visibility 0s .3s}
+.drawer.open{transform:none;visibility:visible;transition:transform .3s}
+.drawer-h{display:flex;justify-content:space-between;align-items:center;padding:22px 24px;border-bottom:1px solid var(--line)}
+.drawer-h h3{font-size:1.1rem;letter-spacing:.2em;text-transform:uppercase}
+.drawer-b{flex:1;overflow:auto;padding:22px 24px}
+.drawer-f{padding:20px 24px;border-top:1px solid var(--line);background:#050d15}
+.empty{text-align:center;color:var(--muted);padding:50px 10px}
+.empty b{display:block;font-family:var(--tech);letter-spacing:.14em;color:var(--ice);margin-bottom:8px}
+.line-item{display:grid;grid-template-columns:76px 1fr auto;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+.line-item .th{width:76px;height:92px}
+.line-item h4{font-size:1.25rem;font-weight:700;line-height:1.1}
+.line-item small{color:var(--muted);font-family:var(--tech);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase}
+.qty{display:inline-flex;align-items:center;border:1px solid #1a3a50;margin-top:10px}
+.qty button{width:32px;height:32px;font-size:1.1rem}
+.qty button:hover{color:var(--cyan)}
+.qty span{min-width:30px;text-align:center;font-family:var(--tech);font-size:.8rem}
+.line-item .pr{font-family:var(--tech);font-weight:700;font-size:.9rem;text-align:right}
+.line-item .rm{display:block;margin-top:10px;color:var(--muted);font-size:.95rem;text-decoration:underline;margin-left:auto}
+.line-item .rm:hover{color:var(--bad)}
+.sum{display:grid;gap:8px;margin-bottom:16px;font-family:var(--tech);font-size:.75rem;letter-spacing:.1em}
+.sum div{display:flex;justify-content:space-between}
+.sum .tot{font-size:1.1rem;color:var(--cyan);border-top:1px solid var(--line);padding-top:12px;margin-top:4px}
+.promo{display:flex;gap:8px;margin-bottom:14px}
+.promo input{flex:1;background:#040c13;border:1px solid #1a3a50;padding:10px 12px;text-transform:uppercase;font-family:var(--tech);font-size:.75rem;letter-spacing:.14em;min-width:0}
+.promo button{border:1px solid var(--cyan);color:var(--cyan);font-family:var(--tech);font-size:.65rem;letter-spacing:.16em;padding:0 16px}
+.ship-note{color:var(--muted);font-size:1rem;margin-bottom:14px}
+.prof-top{display:flex;gap:16px;align-items:center;margin-bottom:22px}
+.prof-top .av{width:64px;height:64px;font-size:1.3rem}
+.prof-top h4{font-family:var(--tech);font-size:1.1rem;letter-spacing:.06em}
+.prof-top small{color:var(--cyan);font-family:var(--tech);font-size:.65rem;letter-spacing:.2em}
+.kv{display:grid;gap:0;border:1px solid var(--line);margin-bottom:20px}
+.kv div{display:grid;grid-template-columns:110px 1fr;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.kv div:last-child{border:0}
+.kv dt{font-family:var(--tech);font-size:.55rem;letter-spacing:.22em;color:var(--muted);text-transform:uppercase;padding-top:4px}
+.kv dd{word-break:break-word}
+.h-sm{font-family:var(--tech);font-size:.7rem;letter-spacing:.24em;color:var(--cyan);text-transform:uppercase;margin:24px 0 12px}
+.order{border:1px solid var(--line);padding:14px;margin-bottom:10px;display:grid;gap:4px}
+.order b{font-family:var(--tech);font-size:.75rem;letter-spacing:.12em;display:flex;justify-content:space-between}
+.order small{color:var(--muted);font-size:1rem}
+.link-btn{color:var(--muted);text-decoration:underline;font-size:1rem}
+.link-btn:hover{color:var(--cyan)}
+
+/* ---------- SHOP view ---------- */
+.shop-hero{padding:clamp(34px,5vw,60px) clamp(16px,2vw,28px) 24px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#05111a,var(--bg));display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.shop-hero p{color:var(--muted);margin-top:12px}
+.shop-hero p b{color:var(--cyan);font-weight:600}
+.ctrl{position:sticky;top:72px;z-index:40;background:rgba(3,8,13,.96);border-bottom:1px solid var(--line);padding:14px clamp(16px,2vw,28px);display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filters button{font-family:var(--tech);font-weight:700;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;padding:11px 16px;border:1px solid #1a3a50;color:#b9cad8;transition:.2s}
+.filters button:hover{border-color:var(--cyan);color:var(--cyan)}
+.filters button.on{background:var(--cyan);border-color:var(--cyan);color:#03121c}
+.find{display:flex;gap:8px}
+.find input,.find select{background:#040c13;border:1px solid #1a3a50;padding:10px 12px;font-size:1rem;min-width:0}
+.find input{width:190px}
+.count{padding:22px clamp(16px,2vw,28px) 0;font-family:var(--tech);font-size:.62rem;letter-spacing:.22em;color:var(--muted);text-transform:uppercase}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px;padding:18px clamp(16px,2vw,28px) 70px}
+.card{background:var(--bg2);border:1px solid var(--line);display:flex;flex-direction:column;transition:border-color .2s}
+.card:hover{border-color:var(--cyan)}
+.card-img{position:relative;aspect-ratio:4/4.6}
+.badge{position:absolute;top:12px;left:12px;background:var(--cyan);color:#03121c;font-family:var(--tech);font-weight:700;font-size:.55rem;letter-spacing:.2em;padding:7px 10px;text-transform:uppercase}
+.heart{position:absolute;top:8px;right:8px;width:40px;height:40px;display:grid;place-items:center;background:rgba(3,8,13,.6);color:var(--ice)}
+.heart svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8}
+.heart.on{color:var(--cyan)}
+.heart.on svg{fill:currentColor}
+.card-b{padding:18px 18px 20px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card .cat{font-family:var(--tech);font-size:.55rem;letter-spacing:.3em;color:var(--cyan);text-transform:uppercase}
+.card h3{font-family:var(--body);font-size:1.6rem;font-weight:700;line-height:1.05}
+.card p{color:var(--muted);font-size:1rem;line-height:1.25;flex:1}
+.card .price{font-family:var(--tech);font-weight:900;font-size:1.9rem;color:var(--ice);display:flex;align-items:baseline;gap:6px;margin:6px 0 2px}
+.card .price i{font-style:normal;font-size:.62rem;color:var(--muted);font-weight:700;letter-spacing:.12em}
+.card .price u{text-decoration:none;font-size:.7rem;color:var(--muted)}
+.sizes{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.sz{min-width:40px;height:36px;padding:0 10px;border:1px solid #2a4a62;font-family:var(--tech);font-size:.62rem;font-weight:700;transition:.15s}
+.sz:hover:not(:disabled){border-color:var(--cyan)}
+.sz.on{background:var(--ice);color:#03121c;border-color:var(--ice)}
+.sz:disabled{color:#3a4d5c;border-color:#15283a;text-decoration:line-through;cursor:not-allowed}
+.no-res{grid-column:1/-1;text-align:center;padding:70px 10px;color:var(--muted)}
+.no-res b{display:block;font-family:var(--tech);letter-spacing:.14em;color:var(--ice);margin-bottom:8px}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,30px);opacity:0;pointer-events:none;background:#06131d;border:1px solid var(--cyan);color:var(--ice);padding:14px 22px;font-family:var(--tech);font-size:.68rem;letter-spacing:.14em;z-index:120;transition:.3s;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- responsive ---------- */
+@media (max-width:1000px){
+  nav.main{position:absolute;top:72px;left:0;right:0;flex-direction:column;gap:0;background:#040b11;border-bottom:1px solid var(--line);display:none;padding:8px 20px 16px}
+  nav.main.open{display:flex}
+  nav.main a{padding:16px 0;border-bottom:1px solid var(--line)}
+  .burger{display:grid}
+  .cur{display:none}
+  .ed-body,.about,.contact{grid-template-columns:1fr}
+  .ed-img{min-height:460px}
+  .ed-img::after{background:linear-gradient(180deg,transparent 60%,var(--cream) 100%)}
+  .look{grid-template-columns:repeat(2,1fr)}
+  .news{grid-template-columns:1fr}
+  .about .pic{min-height:380px}
+  .modal-card{grid-template-columns:1fr}
+  .auth-side{display:none}
+}
+@media (max-width:560px){
+  .logo small{display:none}
+  .stats{gap:26px}
+  .row2{grid-template-columns:1fr}
+  .find,.find input{width:100%}
+  .find{flex-wrap:wrap}
+  .find select{flex:1}
+  .ctrl{position:static}
+  .vals{grid-template-columns:1fr}
+  .grid{grid-template-columns:1fr 1fr;gap:10px}
+  .card h3{font-size:1.3rem}
+  .card .price{font-size:1.4rem}
+  .card-b{padding:14px 12px}
+}
+@media (max-width:380px){.grid{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
-<link rel="stylesheet" href="styles/homepage.css">
 </head>
 <body>
 
-<div class="topbar">
-  <div class="wrap">
-    <a href="#" class="logo">DRIP CARTEL</a>
-    <div class="headicons">
-      <button aria-label="Search"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
-      <button aria-label="Account"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></button>
-      <button aria-label="Cart" id="cartButton" onclick="openCart()"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-13z"/><path d="M6 6L5 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg><span class="cart-count" id="cartCount">0</span></button>
-    </div>
-  </div>
-</div>
+<div class="ann"><span>New drop incoming – limited stock</span><span>Free shipping over R800</span><span>Use code DRIP10 for 10% off your first order</span></div>
 
-<div class="navbar">
-  <div class="wrap">
-    <a href="#">New in</a>
-    <a href="#shop">Hoodies</a>
-    <a href="#shop">T-shirts</a>
-    <a href="#shop">Jackets</a>
-    <a href="#shop">Pants</a>
-    <a href="#shop">Accessories</a>
-    <a href="#" class="sale">Sale</a>
+<header class="top">
+  <div class="top-in">
+    <a class="logo" href="#" data-go="home" aria-label="Drip Cartel home">
+      <svg viewBox="0 0 40 44" aria-hidden="true"><polygon points="20,2 38,12 38,32 20,42 2,32 2,12" fill="none" stroke="#3db8e8" stroke-width="2"/><text x="20" y="27" text-anchor="middle" font-family="Orbitron" font-weight="700" font-size="13" fill="#3db8e8">DC</text></svg>
+      <span><b>DRIP CARTEL</b><small>PREMIUM STREETWEAR</small></span>
+    </a>
+    <nav class="main" id="mainNav" aria-label="Main">
+      <a href="#" data-go="home">Home</a>
+      <a href="#" data-go="shop">Shop</a>
+      <a href="#" data-go="lookbook">Lookbook</a>
+      <a href="#" data-go="news">News</a>
+      <a href="#" data-go="about">About</a>
+      <a href="#" data-go="contact">Contact</a>
+    </nav>
+    <div class="tools">
+      <div class="cur" role="group" aria-label="Currency"><button data-cur="ZAR" class="on" aria-label="South African rand">R</button><button data-cur="USD" aria-label="US dollars">$</button></div>
+      <button class="ico" id="wishBtn" aria-label="Saved items"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.5-9.2C1.2 8.6 3 5 6.5 5c2 0 3.5 1.1 5.5 3 2-1.9 3.5-3 5.5-3C21 5 22.8 8.6 21.5 11.8 19.5 16.4 12 21 12 21z"/></svg></button>
+      <button class="ico" id="profBtn" aria-label="Sign in or open profile"></button>
+      <button class="ico" id="cartBtn" aria-label="Open cart"><svg viewBox="0 0 24 24"><path d="M3 4h2.5l2.2 11h10.6l2-8H7"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><span class="badge-n" id="cartN" hidden>0</span></button>
+      <button class="ico burger" id="burger" aria-label="Menu" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
   </div>
-</div>
+</header>
 
-<section class="hero">
-  <div class="hero-grid">
-    <div class="hero-panel p1"><div class="ph"><span>DRIP CARTEL<br>WORLDWIDE</span></div></div>
-    <div class="hero-panel p2"><div class="ph"><span>DRIP CARTEL<br>NEW COLLECTION</span></div></div>
-    <div class="hero-panel p3"><div class="ph"><span>DRIP CARTEL<br>EST. 2020</span></div></div>
-  </div>
-  <div class="hero-copy">
-    <h1>It's not just a brand<br>it's a lifestyle</h1>
-    <div class="hero-ctas">
-      <a href="#shop" class="hbtn solid">Shop now</a>
-      <a href="#" class="hbtn line">View lookbook</a>
-    </div>
-  </div>
-</section>
-<div class="dots"><span class="active"></span><span></span><span></span></div>
+<!-- ===================== HOME ===================== -->
+<main id="homeView">
 
-<div class="trust">
-  <div class="wrap">
-    <div class="trust-item">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="6" width="14" height="10"/><path d="M15 10h4l3 3v3h-7z"/><circle cx="6" cy="19" r="1.6"/><circle cx="17.5" cy="19" r="1.6"/></svg>
-      <div><div class="t">Free delivery</div><div class="s">On orders over R999</div></div>
-    </div>
-    <div class="trust-item">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4v6h6"/><path d="M20 20v-6h-6"/><path d="M5.5 9A8 8 0 0119 8.5"/><path d="M18.5 15A8 8 0 015 15.5"/></svg>
-      <div><div class="t">Easy returns</div><div class="s">30-day return policy</div></div>
-    </div>
-    <div class="trust-item">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="10" width="16" height="10" rx="1"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
-      <div><div class="t">Secure payments</div><div class="s">100% secure checkout</div></div>
-    </div>
-    <div class="trust-item">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 13a8 8 0 0116 0"/><rect x="2" y="13" width="4" height="6" rx="1"/><rect x="18" y="13" width="4" height="6" rx="1"/></svg>
-      <div><div class="t">Customer support</div><div class="s">Here to help</div></div>
-    </div>
-  </div>
-</div>
-
-<section class="section" id="categories">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>Shop by category</h2>
-      <a href="#shop" class="view-all">View all &rarr;</a>
-    </div>
-    <div class="cat-grid">
-      <a href="#" class="cat-card">
-        <div class="thumb c1"><div class="ph"><span>DRIP CARTEL</span></div></div>
-        <div class="name">Hoodies</div><div class="sub">Shop now</div>
-      </a>
-      <a href="#" class="cat-card">
-        <div class="thumb c2"><div class="ph"><span>BLOC</span></div></div>
-        <div class="name">T-shirts</div><div class="sub">Shop now</div>
-      </a>
-      <a href="#" class="cat-card">
-        <div class="thumb c3"><div class="ph"><span>DRIP CARTEL</span></div></div>
-        <div class="name">Jackets</div><div class="sub">Shop now</div>
-      </a>
-      <a href="#" class="cat-card">
-        <div class="thumb c4"><div class="ph"><span>&nbsp;</span></div></div>
-        <div class="name">Pants</div><div class="sub">Shop now</div>
-      </a>
-      <a href="#" class="cat-card">
-        <div class="thumb c5"><div class="ph"><span>DRIP CARTEL</span></div></div>
-        <div class="name">Accessories</div><div class="sub">Shop now</div>
-      </a>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="shop">
-  <div class="wrap">
-    <div class="filterbar">
-      <div class="filterbar-left">
-        <button class="filter-btn">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
-          Filters
-        </button>
-        <span class="count">48 products</span>
-        <div class="chip">Size: S <button aria-label="Remove">&times;</button></div>
-        <div class="chip">Size: M <button aria-label="Remove">&times;</button></div>
-        <div class="chip">Colour: Black <button aria-label="Remove">&times;</button></div>
-        <a href="#" class="clear-all">Clear all</a>
+  <section class="hero ph0" id="home" data-img="hero">
+    <div class="hero-in">
+      <div class="tag"><span>2025 Collection</span></div>
+      <h1><span class="drip">DRIP</span><span class="est">Est. 2021 · South Africa</span><span class="cartel">CARTEL</span></h1>
+      <div class="hero-btns">
+        <button class="btn fill" data-shop="all">Shop now ›</button>
+        <button class="btn line" data-go="newdrop">New drop</button>
+        <button class="btn blue" data-shop="limited">Limited drop</button>
       </div>
-      <div class="filterbar-right">
-        <div class="sort">Featured
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-        </div>
-        <div class="view-toggle">
-          <button aria-label="Grid view"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
-          <button aria-label="List view"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg></button>
-        </div>
-      </div>
+      <dl class="stats">
+        <div><dt>50K+</dt><dd>Members</dd></div>
+        <div><dt>13</dt><dd>Drops</dd></div>
+        <div><dt>100%</dt><dd>Street</dd></div>
+      </dl>
     </div>
-
-    <div class="pgrid">
-      <a href="#" class="pcard">
-        <div class="thumb g1">
-          <div class="ph"><span>DRIP CARTEL<br>WORLDWIDE</span></div>
-          <div class="wishlist"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 5a5.5 5.5 0 019.5 7c-2.5 4.5-9.5 9-9.5 9z"/></svg></div>
-        </div>
-        <div class="cat">Hoodies</div>
-        <div class="name">Full Cartel Outfit</div>
-        <div class="stars"><span class="s-row">★★★★★</span><span class="count">(24)</span></div>
-        <div class="price-row"><span class="price">R 649</span></div>
-        <button class="add-btn" onclick="addProduct(event, 'Full Cartel Outfit', 'Hoodies', 649)">Add to cart</button>
-      </a>
-
-      <a href="#" class="pcard">
-        <div class="thumb g2">
-          <div class="sale-tag">Sale</div>
-          <div class="ph"><span>BLOC</span></div>
-          <div class="wishlist"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 5a5.5 5.5 0 019.5 7c-2.5 4.5-9.5 9-9.5 9z"/></svg></div>
-        </div>
-        <div class="cat">T-shirts</div>
-        <div class="name">Bloc Letter Tee</div>
-        <div class="stars"><span class="s-row">★★★☆☆</span><span class="count">(17)</span></div>
-        <div class="price-row"><span class="price">R 279</span><span class="price strike">R 399</span><span class="save">Save R120</span></div>
-        <button class="add-btn" onclick="addProduct(event, 'Bloc Letter Tee', 'T-shirts', 279)">Add to cart</button>
-      </a>
-
-      <a href="#" class="pcard">
-        <div class="thumb g3">
-          <div class="ph"><span>&nbsp;</span></div>
-          <div class="wishlist"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 5a5.5 5.5 0 019.5 7c-2.5 4.5-9.5 9-9.5 9z"/></svg></div>
-        </div>
-        <div class="cat">Hoodies</div>
-        <div class="name">Essential Hoodie</div>
-        <div class="stars"><span class="s-row">★★★★★</span><span class="count">(31)</span></div>
-        <div class="price-row"><span class="price">R 599</span></div>
-        <button class="add-btn" onclick="addProduct(event, 'Essential Hoodie', 'Hoodies', 599)">Add to cart</button>
-      </a>
-
-      <a href="#" class="pcard">
-        <div class="thumb g4">
-          <div class="ph"><span>DRIP CARTEL<br>CAPTAIN</span></div>
-          <div class="wishlist"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 5a5.5 5.5 0 019.5 7c-2.5 4.5-9.5 9-9.5 9z"/></svg></div>
-        </div>
-        <div class="cat">Jackets</div>
-        <div class="name">Cartel Bomber Jacket</div>
-        <div class="stars"><span class="s-row">★★★★☆</span><span class="count">(12)</span></div>
-        <div class="price-row"><span class="price">R 799</span></div>
-        <button class="add-btn" onclick="addProduct(event, 'Cartel Bomber Jacket', 'Jackets', 799)">Add to cart</button>
-      </a>
-    </div>
-  </div>
-</section>
-
-<div class="checkout-shell" id="checkoutShell" aria-hidden="true">
-  <div class="checkout-backdrop" onclick="closeCheckout()"></div>
-  <section class="checkout-panel" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
-    <button class="checkout-close" aria-label="Close checkout" onclick="closeCheckout()">&times;</button>
-    <div class="checkout-progress">
-      <button class="checkout-step active" id="checkoutStep1" onclick="showCheckoutStep(1)"><b>1</b><span>Cart</span></button>
-      <i></i><button class="checkout-step" id="checkoutStep2" onclick="showCheckoutStep(2)"><b>2</b><span>Shipping</span></button>
-      <i></i><button class="checkout-step" id="checkoutStep3" onclick="showCheckoutStep(3)"><b>3</b><span>Payment</span></button>
-    </div>
-
-    <div class="checkout-view active" id="checkoutCartView">
-      <div class="checkout-heading"><span>YOUR</span><h2 id="checkoutTitle">Cart</h2></div>
-      <div class="checkout-layout-mini">
-        <div><div class="checkout-items" id="checkoutItems"></div><p class="checkout-empty" id="checkoutEmpty">Your cart is waiting for its first statement piece.</p></div>
-        <aside class="checkout-summary">
-          <h3>Order summary</h3>
-          <div class="promo-inline"><input id="promoInput" placeholder="Promo code"><button onclick="applyCheckoutPromo()">Apply</button></div>
-          <div class="summary-line"><span>Subtotal</span><strong id="summarySubtotal">R 0</strong></div>
-          <div class="summary-line"><span>Shipping</span><strong id="summaryShipping">R 99</strong></div>
-          <div class="summary-line total"><span>Total</span><strong id="summaryTotal">R 0</strong></div>
-          <p class="promo-message" id="promoMessage"></p>
-          <button class="checkout-primary" onclick="showCheckoutStep(2)">Proceed to checkout</button>
-          <button class="checkout-secondary" onclick="closeCheckout()">Continue shopping</button>
-        </aside>
-      </div>
-    </div>
-
-    <div class="checkout-view" id="checkoutShippingView">
-      <div class="checkout-heading"><span>STEP TWO</span><h2>Shipping details</h2></div>
-      <div class="checkout-layout-mini">
-        <div class="checkout-form-grid">
-          <label>First name<input placeholder="e.g. Siyanda"></label><label>Last name<input placeholder="e.g. Dlamini"></label>
-          <label>Email address<input type="email" placeholder="you@email.com"></label><label>Phone number<input type="tel" placeholder="+27 82 000 0000"></label>
-          <label class="wide">Street address<input placeholder="123 Main Street"></label><label>City<input placeholder="Johannesburg"></label><label>Postal code<input placeholder="2196"></label>
-          <div class="wide delivery-choice"><button class="selected" onclick="selectDeliveryChoice(this)"><span>Standard delivery</span><b>R 99</b><small>3-5 business days</small></button><button onclick="selectDeliveryChoice(this)"><span>Express delivery</span><b>R 199</b><small>1-2 business days</small></button><button onclick="selectDeliveryChoice(this)"><span>Pargo click & collect</span><b>FREE</b><small>3-5 days</small></button></div>
-        </div>
-        <aside class="checkout-summary compact-summary"><h3>Order total</h3><div class="summary-line"><span>Items</span><strong id="shippingItemTotal">R 0</strong></div><div class="summary-line total"><span>Total</span><strong id="shippingTotal">R 0</strong></div><button class="checkout-primary" onclick="showCheckoutStep(3)">Continue to payment</button><button class="checkout-secondary" onclick="showCheckoutStep(1)">Back to cart</button></aside>
-      </div>
-    </div>
-
-    <div class="checkout-view" id="checkoutPaymentView">
-      <div class="checkout-heading"><span>STEP THREE</span><h2>Payment method</h2></div>
-      <div class="checkout-layout-mini">
-        <div class="payment-choices"><button class="payment-choice selected" onclick="selectPaymentChoice(this)"><strong>PayFast</strong><span>Card, EFT, SnapScan</span></button><button class="payment-choice" onclick="selectPaymentChoice(this)"><strong>Yoco</strong><span>Instant card payment</span></button><button class="payment-choice" onclick="selectPaymentChoice(this)"><strong>Ozow</strong><span>Instant EFT</span></button></div>
-        <aside class="checkout-summary compact-summary"><h3>Ready to order?</h3><div class="summary-line total"><span>Total</span><strong id="paymentTotal">R 0</strong></div><p class="secure-copy">Secure checkout with encrypted payment.</p><button class="checkout-primary" onclick="completeCheckout()">Place order</button><button class="checkout-secondary" onclick="showCheckoutStep(2)">Back to shipping</button></aside>
-      </div>
-    </div>
-
-    <div class="checkout-view confirmation-view" id="checkoutConfirmationView"><div class="confirmation-mark">&#10003;</div><div class="checkout-heading"><span>THANK YOU</span><h2>Order confirmed</h2></div><p>Your order has been placed successfully. We will send tracking details to your email shortly.</p><strong class="order-number">DC-2026-00847</strong><button class="checkout-primary" onclick="closeCheckout()">Continue shopping</button></div>
   </section>
+
+  <section class="sec" id="newdrop">
+    <div class="sec-head"><h2>NEW <span>DROP</span></h2><button class="btn line" data-shop="all">See all</button></div>
+    <div class="editorial">
+      <div class="ed-bar">
+        <div><span class="ed-logo">DRIP <em>CARTEL</em>.</span><small>BY DRIPCARTEL.CO.ZA</small></div>
+        <span class="ed-tag">SS25 DROP</span>
+      </div>
+      <div class="ed-body">
+        <div class="ed-img ph" data-img="drop" role="img" aria-label="Model wearing the DC tracksuit">
+          <span class="dot" data-i="0" style="left:38%;top:16%">01</span>
+          <span class="dot" data-i="1" style="left:44%;top:46%">02</span>
+          <span class="dot" data-i="2" style="left:40%;top:78%">03</span>
+        </div>
+        <div class="ed-list" id="edList"></div>
+      </div>
+    </div>
+    <div class="fit">
+      <div><h3>Denim Jacket + Cargo Pants</h3><small>Save <span data-price="100"></span> · his full denim fit</small></div>
+      <div class="fit-price"><b data-price="1000"></b><small>Denim set</small></div>
+      <button class="btn fill sm" data-shop="sets">Shop the fit</button>
+    </div>
+    <div class="strip">
+      <span>Limited stock · while supplies last</span>
+      <span class="szs">Sizes: <span>S</span><span>M</span><span>L</span><span>XL</span><span class="x">XXL</span></span>
+      <b>dripcartel.co.za</b>
+    </div>
+  </section>
+
+  <section class="sec" id="lookbook">
+    <div class="sec-head"><h2>THE <span>LOOKBOOK</span></h2><button class="btn line" data-shop="all">Shop the looks</button></div>
+    <div class="look">
+      <button class="ph" data-img="look1" data-shop="sets"><span>Tracksuit</span></button>
+      <button class="ph" data-img="look2" data-shop="tops"><span>Denim</span></button>
+      <button class="ph" data-img="look3" data-shop="headwear"><span>Headwear</span></button>
+      <button class="ph" data-img="look4" data-shop="accessories"><span>After dark</span></button>
+    </div>
+  </section>
+
+  <section class="statement">
+    <div class="k">Drip Cartel · SS25</div>
+    <h2>IT'S MORE THAN <span>JUST A BRAND</span> IT'S A LIFESTYLE.</h2>
+    <hr>
+  </section>
+
+  <section class="sec" id="news">
+    <div class="sec-head"><h2>CARTEL <span>NEWS</span></h2></div>
+    <div class="news">
+      <article><span class="k">SS25 DROP</span><h3>The SS25 collection is live</h3><p>Tracksuits, denim, headwear and bags. Everything from the new drop is in the shop for members.</p></article>
+      <article><span class="k">LIMITED</span><h3>Denim set: jacket and cargo pants</h3><p>The full denim fit at R1000. Save R100 against buying the pieces separately.</p></article>
+      <article><span class="k">MEMBERS</span><h3>Join the Cartel</h3><p>Create a profile to save your size, keep a wishlist and check out faster. Use DRIP10 on your first order.</p></article>
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <div class="pic ph" data-img="about" role="img" aria-label="Drip Cartel founder in black tracksuit"></div>
+    <div class="txt">
+      <div class="eyebrow">Our story</div>
+      <h2>WE ARE <span>CARTEL</span></h2>
+      <div class="rule"></div>
+      <div class="sub">Born in the streets. Built for the elite.</div>
+      <p class="copy">DRIP CARTEL isn't just clothing — it's a movement. Born from the raw energy of street culture, we fuse underground aesthetics with high-end craftsmanship to create pieces that command respect. Every stitch, every drop, every design carries a message: you don't just wear DRIP CARTEL. You become it.</p>
+      <div class="vals">
+        <div><b>Boldness</b><small>No limits, no apologies</small></div>
+        <div><b>Hustle</b><small>Earned, never given</small></div>
+        <div><b>Loyalty</b><small>Cartel is family</small></div>
+        <div><b>Drip</b><small>Wear your power</small></div>
+      </div>
+      <button class="btn fill" data-shop="all">Shop the collection ›</button>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div>
+      <h2>GET IN <span>TOUCH</span></h2>
+      <p>Questions about sizing, an order or a collab? Send a message and the Cartel will get back to you.</p>
+      <div class="info"><span>hello@dripcartel.co.za</span><span>dripcartel.co.za</span><span>South Africa</span></div>
+    </div>
+    <form id="contactForm" novalidate>
+      <div class="row2">
+        <div class="f"><label for="ct-name">Name</label><input id="ct-name" autocomplete="name"><span class="err"></span></div>
+        <div class="f"><label for="ct-email">Email</label><input id="ct-email" type="email" autocomplete="email"><span class="err"></span></div>
+      </div>
+      <div class="f"><label for="ct-msg">Message</label><textarea id="ct-msg"></textarea><span class="err"></span></div>
+      <button class="btn fill" type="submit">Send message</button>
+    </form>
+  </section>
+</main>
+
+<!-- ===================== SHOP (after sign in) ===================== -->
+<main id="shopView" hidden>
+  <div class="shop-hero">
+    <div>
+      <h1 class="page-title">THE <span>SHOP</span></h1>
+      <p id="shopWelcome"></p>
+    </div>
+    <button class="btn line sm" data-go="home">‹ Back to home</button>
+  </div>
+  <div class="ctrl">
+    <div class="filters" id="filters" role="group" aria-label="Filter products"></div>
+    <div class="find">
+      <input id="q" type="search" placeholder="Search products" aria-label="Search products">
+      <select id="sort" aria-label="Sort products">
+        <option value="featured">Featured</option>
+        <option value="asc">Price: low to high</option>
+        <option value="desc">Price: high to low</option>
+        <option value="name">Name: A to Z</option>
+      </select>
+    </div>
+  </div>
+  <div class="count" id="count"></div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>
+  <span>© <span id="yr"></span> Drip Cartel · Est. 2021 · South Africa</span>
+  <nav><a href="#" data-go="shop">Shop</a><a href="#" data-go="lookbook">Lookbook</a><a href="#" data-go="about">About</a><a href="#" data-go="contact">Contact</a></nav>
+</footer>
+
+<!-- ===================== AUTH MODAL ===================== -->
+<div class="modal" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="modal-card">
+    <button class="x" data-close aria-label="Close">×</button>
+    <div class="auth-side ph0" data-img="hero">
+      <div class="drip" style="font-family:var(--display);font-weight:900">DRIP</div>
+      <div class="cartel">CARTEL</div>
+      <ul><li>Members-only shop</li><li>Save your size and delivery details</li><li>Wishlist and order history</li></ul>
+    </div>
+    <div class="auth-main">
+      <div class="tabs" role="tablist">
+        <button role="tab" data-tab="signup" class="on">Create account</button>
+        <button role="tab" data-tab="login">Sign in</button>
+      </div>
+
+      <form id="signupForm" novalidate autocomplete="on">
+        <div class="steps"><span class="on" data-s="1">1 · Your details</span><span data-s="2">2 · Your profile</span></div>
+        <div id="step1">
+          <h3 id="authTitle">Join the Cartel</h3>
+          <p class="hint">Create an account to enter the shop.</p>
+          <div class="f"><label for="su-name">Full name</label><input id="su-name" autocomplete="name"><span class="err"></span></div>
+          <div class="row2">
+            <div class="f"><label for="su-email">Email</label><input id="su-email" type="email" autocomplete="email"><span class="err"></span></div>
+            <div class="f"><label for="su-phone">Phone</label><input id="su-phone" type="tel" autocomplete="tel" placeholder="082 000 0000"><span class="err"></span></div>
+          </div>
+          <div class="row2">
+            <div class="f"><label for="su-pass">Password</label><input id="su-pass" type="password" autocomplete="new-password" placeholder="At least 8 characters"><span class="err"></span></div>
+            <div class="f"><label for="su-pass2">Confirm password</label><input id="su-pass2" type="password" autocomplete="new-password"><span class="err"></span></div>
+          </div>
+          <div class="form-actions"><button class="btn fill" type="submit">Continue ›</button></div>
+        </div>
+        <div id="step2" hidden>
+          <h3>Set up your profile</h3>
+          <p class="hint">We use this to pre-select your size and delivery details.</p>
+          <div class="row2">
+            <div class="f"><label for="su-user">Username</label><input id="su-user" autocomplete="username" placeholder="e.g. dripking_za"><span class="err"></span></div>
+            <div class="f"><label for="su-city">City</label><input id="su-city" autocomplete="address-level2" placeholder="Pretoria"><span class="err"></span></div>
+          </div>
+          <div class="f"><span class="lab">Your usual size</span>
+            <div class="chips" id="su-size">
+              <label class="chip"><input type="radio" name="su-size" value="S"><span>S</span></label>
+              <label class="chip"><input type="radio" name="su-size" value="M"><span>M</span></label>
+              <label class="chip"><input type="radio" name="su-size" value="L"><span>L</span></label>
+              <label class="chip"><input type="radio" name="su-size" value="XL"><span>XL</span></label>
+              <label class="chip"><input type="radio" name="su-size" value="XXL"><span>XXL</span></label>
+            </div><span class="err"></span></div>
+          <div class="f"><label for="su-addr">Delivery address</label><textarea id="su-addr" autocomplete="street-address"></textarea><span class="err"></span></div>
+          <div class="f"><label class="check"><input type="checkbox" id="su-terms"><span>I agree to the terms and to receive order updates from Drip Cartel.</span></label><span class="err"></span></div>
+          <div class="form-actions"><button class="btn line" type="button" id="backBtn">‹ Back</button><button class="btn fill" type="submit">Create profile</button></div>
+        </div>
+      </form>
+
+      <form id="loginForm" novalidate hidden>
+        <h3>Welcome back</h3>
+        <p class="hint">Sign in to enter the shop.</p>
+        <div class="f"><label for="li-email">Email</label><input id="li-email" type="email" autocomplete="email"><span class="err"></span></div>
+        <div class="f"><label for="li-pass">Password</label><input id="li-pass" type="password" autocomplete="current-password"><span class="err"></span></div>
+        <div class="form-actions"><button class="btn fill" type="submit">Sign in ›</button></div>
+      </form>
+    </div>
+  </div>
 </div>
+
+<!-- ===================== DRAWERS ===================== -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="cartDrawer" aria-label="Cart">
+  <div class="drawer-h"><h3>Your cart</h3><button class="x" style="position:static" data-close aria-label="Close cart">×</button></div>
+  <div class="drawer-b" id="cartBody"></div>
+  <div class="drawer-f" id="cartFoot"></div>
+</aside>
+<aside class="drawer" id="profDrawer" aria-label="Profile">
+  <div class="drawer-h"><h3>My profile</h3><button class="x" style="position:static" data-close aria-label="Close profile">×</button></div>
+  <div class="drawer-b" id="profBody"></div>
+</aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-  const cart = [];
-  let checkoutShipping = 99;
-  function money(value) { return 'R ' + value.toLocaleString('en-ZA'); }
-  function addProduct(event, name, category, price) {
-    event.preventDefault(); event.stopPropagation();
-    const existing = cart.find(item => item.name === name);
-    if (existing) existing.quantity += 1;
-    else cart.push({ name, category, price, quantity: 1 });
-    renderCart(); openCart();
-  }
-  function openCart() { renderCart(); document.getElementById('checkoutShell').classList.add('open'); document.getElementById('checkoutShell').setAttribute('aria-hidden', 'false'); showCheckoutStep(1); }
-  function closeCheckout() { document.getElementById('checkoutShell').classList.remove('open'); document.getElementById('checkoutShell').setAttribute('aria-hidden', 'true'); }
-  function cartTotal() { return cart.reduce((total, item) => total + item.price * item.quantity, 0); }
-  function renderCart() {
-    const items = document.getElementById('checkoutItems'); items.innerHTML = '';
-    document.getElementById('checkoutEmpty').style.display = cart.length ? 'none' : 'block';
-    cart.forEach((item, index) => { items.insertAdjacentHTML('beforeend', `<article class="checkout-item"><div class="checkout-item-art">${item.category}</div><div class="checkout-item-info"><small>${item.category}</small><strong>${item.name}</strong><span>${money(item.price)} each</span><div class="checkout-quantity"><button onclick="changeQuantity(${index}, -1)">-</button><b>${item.quantity}</b><button onclick="changeQuantity(${index}, 1)">+</button><button class="item-remove" onclick="removeFromCart(${index})">Remove</button></div></div><strong class="checkout-item-price">${money(item.price * item.quantity)}</strong></article>`); });
-    const total = cartTotal(); document.getElementById('cartCount').textContent = cart.reduce((sum, item) => sum + item.quantity, 0); document.getElementById('summarySubtotal').textContent = money(total); document.getElementById('summaryShipping').textContent = cart.length ? money(checkoutShipping) : money(0); document.getElementById('summaryTotal').textContent = money(total + (cart.length ? checkoutShipping : 0)); ['shippingItemTotal', 'shippingTotal', 'paymentTotal'].forEach(id => { const element = document.getElementById(id); if (element) element.textContent = money(total + (id === 'shippingItemTotal' ? 0 : checkoutShipping)); });
-  }
-  function changeQuantity(index, amount) { cart[index].quantity = Math.max(1, cart[index].quantity + amount); renderCart(); }
-  function removeFromCart(index) { cart.splice(index, 1); renderCart(); }
-  function showCheckoutStep(step) { document.querySelectorAll('.checkout-view').forEach(view => view.classList.remove('active')); const view = document.getElementById(['', 'checkoutCartView', 'checkoutShippingView', 'checkoutPaymentView'][step]); if (view) view.classList.add('active'); document.querySelectorAll('.checkout-step').forEach((button, index) => button.classList.toggle('active', index < step)); renderCart(); }
-  function selectDeliveryChoice(button) { document.querySelectorAll('.delivery-choice button').forEach(item => item.classList.remove('selected')); button.classList.add('selected'); checkoutShipping = button.querySelector('b').textContent === 'FREE' ? 0 : parseInt(button.querySelector('b').textContent.replace(/\D/g, ''), 10); renderCart(); }
-  function selectPaymentChoice(button) { document.querySelectorAll('.payment-choice').forEach(item => item.classList.remove('selected')); button.classList.add('selected'); }
-  function applyCheckoutPromo() { const input = document.getElementById('promoInput'); const message = document.getElementById('promoMessage'); message.textContent = input.value.trim().toUpperCase() === 'DRIP20' ? 'DRIP20 applied at checkout.' : 'Try DRIP20 for 20% off.'; }
-  function completeCheckout() { document.querySelectorAll('.checkout-view').forEach(view => view.classList.remove('active')); document.getElementById('checkoutConfirmationView').classList.add('active'); document.querySelectorAll('.checkout-step').forEach(button => button.classList.remove('active')); cart.length = 0; document.getElementById('cartCount').textContent = '0'; }
-  renderCart();
-</script>
+(() => {
+/* =====================================================================
+   EDIT THESE: your photos, products, prices
+   ===================================================================== */
+const IMG = {                          // put your photos in an "images" folder next to this file
+  hero:  'images/hero.jpg',
+  drop:  'images/new-drop.jpg',
+  about: 'images/about.jpg',
+  look1: 'images/look-1.jpg', look2: 'images/look-2.jpg',
+  look3: 'images/look-3.jpg', look4: 'images/look-4.jpg'
+};
+const RATE = 18.5;                     // ZAR per 1 USD for the $ toggle
+const FREE_SHIP = 800, SHIP_FEE = 80;  // free shipping over R800, otherwise flat fee (ZAR)
 
+// price is in ZAR. cat: tops | bottoms | sets | headwear | accessories
+// out: sizes that are sold out.  limited: true shows under the "Limited" filter.
+const PRODUCTS = [
+  { id:'beanie',  name:'DC Beanie',            cat:'headwear',    price:80,   sizes:['One size'], tag:'',        img:'images/beanie.jpg',
+    desc:'Black ribbed knit · embroidered DRIP CARTEL logo · one size fits all' },
+  { id:'jacket',  name:'DC Tracksuit Jacket',  cat:'tops',        price:500,  sizes:['S','M','L','XL','XXL'], out:['XXL'], tag:'New', img:'images/jacket.jpg',
+    desc:'Black quarter-zip · white contrast piping · DRIP CARTEL chest logo' },
+  { id:'pants',   name:'DC Tracksuit Pants',   cat:'bottoms',     price:600,  sizes:['S','M','L','XL','XXL'], out:['XXL'], tag:'New', img:'images/pants.jpg',
+    desc:'Wide-leg track pants · white piping detail · DC signature leg logo' },
+  { id:'denimjkt',name:'DC Denim Jacket',      cat:'tops',        price:550,  sizes:['S','M','L','XL','XXL'], out:['XXL'], tag:'', img:'images/denim-jacket.jpg',
+    desc:'Washed denim jacket · DRIP CARTEL back embroidery' },
+  { id:'cargo',   name:'DC Cargo Pants',       cat:'bottoms',     price:550,  sizes:['S','M','L','XL','XXL'], out:['XXL'], tag:'', img:'images/cargo.jpg',
+    desc:'Relaxed cargo fit · utility pockets · DC logo tab' },
+  { id:'denimset',name:'Denim Set: Jacket + Cargo Pants', cat:'sets', price:1000, sizes:['S','M','L','XL','XXL'], out:['XXL'], tag:'Save R100', limited:true, img:'images/denim-set.jpg',
+    desc:'His full denim fit · save R100 against buying separately' },
+  // ---- sample items: replace with your real products ----
+  { id:'tee',     name:'DC Logo Tee',          cat:'tops',        price:250,  sizes:['S','M','L','XL','XXL'], tag:'', img:'images/tee.jpg',
+    desc:'Heavyweight cotton tee · DRIP CARTEL chest print' },
+  { id:'cap',     name:'DC Cap',               cat:'headwear',    price:120,  sizes:['One size'], tag:'', img:'images/cap.jpg',
+    desc:'Structured six-panel cap · embroidered DC monogram · adjustable strap' },
+  { id:'bag',     name:'DC Crossbody Bag',     cat:'accessories', price:180,  sizes:['One size'], tag:'', img:'images/bag.jpg',
+    desc:'Black utility crossbody · zip pockets · adjustable strap · DC logo' }
+];
+const DROP = [['beanie','Headwear'],['jacket','Top'],['pants','Bottom']];   // items beside the New Drop photo
+const CATS = [['all','All'],['tops','Tops'],['bottoms','Bottoms'],['sets','Sets'],['headwear','Headwear'],['accessories','Accessories'],['limited','Limited'],['saved','Saved']];
+/* ===================================================================== */
+
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const byId = id => PRODUCTS.find(p => p.id === id);
+const HEART = '<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.5-9.2C1.2 8.6 3 5 6.5 5c2 0 3.5 1.1 5.5 3 2-1.9 3.5-3 5.5-3C21 5 22.8 8.6 21.5 11.8 19.5 16.4 12 21 12 21z"/></svg>';
+const USER  = '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>';
+
+/* ---------- storage (localStorage, guarded) ---------- */
+const store = {
+  get(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+};
+let users = store.get('dc_users', {});
+const state = { user:null, cur:store.get('dc_cur','ZAR'), filter:'all', sort:'featured', q:'', sel:{}, promo:false, after:null, step:1, editing:false };
+{ const s = store.get('dc_session', null); if (s && users[s]) state.user = users[s]; }
+const saveUser = () => { if (state.user){ users[state.user.email] = state.user; store.set('dc_users', users); } };
+
+/* ---------- helpers ---------- */
+const money = n => state.cur === 'ZAR' ? 'R' + Math.round(n).toLocaleString('en-ZA') : '$' + (n / RATE).toFixed(2);
+function bigPrice(n){
+  if (state.cur === 'ZAR') return `<i>ZAR</i><span>${n.toLocaleString('en-ZA')}</span><u>,00</u>`;
+  const [a, b] = (n / RATE).toFixed(2).split('.');
+  return `<i>USD</i><span>${a}</span><u>,${b}</u>`;
+}
+function defaultSize(p){
+  if (p.sizes.length === 1) return p.sizes[0];
+  const out = p.out || [], pref = state.user && state.user.size;
+  if (pref && p.sizes.includes(pref) && !out.includes(pref)) return pref;
+  return p.sizes.find(s => !out.includes(s)) || p.sizes[0];
+}
+let toastT;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2600); }
+async function hash(pw, salt){
+  const s = salt + ':' + pw;
+  try {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
+  } catch(e){ let h = 5381; for (const c of s) h = ((h << 5) + h + c.charCodeAt(0)) >>> 0; return 'f' + h.toString(16); }
+}
+const newSalt = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
+
+/* ---------- images ---------- */
+$$('[data-img]').forEach(el => el.style.setProperty('--img', `url('${IMG[el.dataset.img]}')`));
+
+/* ---------- views + navigation ---------- */
+function showView(v){
+  $('#homeView').hidden = v !== 'home';
+  $('#shopView').hidden = v !== 'shop';
+  $$('nav.main a').forEach(a => a.classList.toggle('active', a.dataset.go === v));
+  if (v === 'shop'){ renderShop(); window.scrollTo(0, 0); }
+}
+function requireAuth(fn){
+  if (state.user) return fn();
+  openAuth(Object.keys(users).length ? 'login' : 'signup', fn);
+}
+function go(t, opts = {}){
+  closeMenu(); closeDrawers();
+  if (t === 'shop'){
+    requireAuth(() => { if (opts.filter) state.filter = opts.filter; showView('shop'); });
+    return;
+  }
+  showView('home');
+  if (t === 'home') window.scrollTo({ top:0, behavior:'smooth' });
+  else { const el = document.getElementById(t); if (el) el.scrollIntoView({ behavior:'smooth' }); }
+}
+const closeMenu = () => { $('#mainNav').classList.remove('open'); $('#burger').setAttribute('aria-expanded','false'); };
+
+/* ---------- modal + drawers ---------- */
+let lastFocus = null;
+function openModal(id){ lastFocus = document.activeElement; $('#'+id).classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeModal(id){ $('#'+id).classList.remove('open'); document.body.style.overflow = ''; if (lastFocus && lastFocus.focus) lastFocus.focus(); }
+function openDrawer(id){ closeDrawers(); $('#'+id).classList.add('open'); $('#scrim').classList.add('open'); }
+function closeDrawers(){ $$('.drawer').forEach(d => d.classList.remove('open')); $('#scrim').classList.remove('open'); }
+
+/* ---------- auth ---------- */
+function openAuth(tab, after){
+  state.after = after || null;
+  setTab(tab || 'signup');
+  openModal('authModal');
+  setTimeout(() => { const i = tab === 'login' ? $('#li-email') : $('#su-name'); i && i.focus(); }, 30);
+}
+function setTab(t){
+  $$('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
+  $('#signupForm').hidden = t !== 'signup';
+  $('#loginForm').hidden = t !== 'login';
+  if (t === 'signup') setStep(1);
+}
+function setStep(n){
+  state.step = n;
+  $('#step1').hidden = n !== 1; $('#step2').hidden = n !== 2;
+  $$('.steps span').forEach(s => s.classList.toggle('on', +s.dataset.s <= n));
+  const i = n === 1 ? $('#su-name') : $('#su-user'); if (i && $('#authModal').classList.contains('open')) i.focus();
+}
+function fieldErr(el, msg){
+  const f = el.closest('.f'); f.classList.toggle('bad', !!msg);
+  f.querySelector('.err').textContent = msg || '';
+  return !msg;
+}
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function validStep1(){
+  let ok = true;
+  const name = $('#su-name'), email = $('#su-email'), phone = $('#su-phone'), p1 = $('#su-pass'), p2 = $('#su-pass2');
+  ok = fieldErr(name, name.value.trim().length < 2 ? 'Enter your full name.' : '') && ok;
+  const em = email.value.trim().toLowerCase();
+  ok = fieldErr(email, !EMAIL.test(em) ? 'Enter a valid email address.' : users[em] ? 'An account with this email exists. Use the Sign in tab.' : '') && ok;
+  ok = fieldErr(phone, phone.value.replace(/\D/g,'').length < 9 ? 'Enter a valid phone number.' : '') && ok;
+  ok = fieldErr(p1, p1.value.length < 8 ? 'Use at least 8 characters.' : '') && ok;
+  ok = fieldErr(p2, p2.value !== p1.value ? 'Passwords do not match.' : '') && ok;
+  return ok;
+}
+function validStep2(){
+  let ok = true;
+  const un = $('#su-user'), city = $('#su-city'), addr = $('#su-addr'), terms = $('#su-terms');
+  const taken = Object.values(users).some(u => u.username.toLowerCase() === un.value.trim().toLowerCase());
+  ok = fieldErr(un, !/^[a-zA-Z0-9_]{3,20}$/.test(un.value.trim()) ? '3–20 characters: letters, numbers or underscore.' : taken ? 'That username is taken.' : '') && ok;
+  ok = fieldErr(city, city.value.trim().length < 2 ? 'Enter your city.' : '') && ok;
+  ok = fieldErr($('#su-size'), !$('input[name=su-size]:checked') ? 'Choose your usual size.' : '') && ok;
+  ok = fieldErr(addr, addr.value.trim().length < 6 ? 'Enter your delivery address.' : '') && ok;
+  ok = fieldErr(terms, !terms.checked ? 'Tick the box to continue.' : '') && ok;
+  return ok;
+}
+$('#signupForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (state.step === 1){ if (validStep1()) setStep(2); return; }
+  if (!validStep2()) return;
+  const salt = newSalt(), email = $('#su-email').value.trim().toLowerCase();
+  users[email] = {
+    name: $('#su-name').value.trim(), email, phone: $('#su-phone').value.trim(),
+    username: $('#su-user').value.trim(), city: $('#su-city').value.trim(),
+    size: $('input[name=su-size]:checked').value, address: $('#su-addr').value.trim(),
+    salt, hash: await hash($('#su-pass').value, salt), created: Date.now(),
+    cart: [], wish: [], orders: []
+  };
+  store.set('dc_users', users);
+  signedIn(users[email], true);
+});
+$('#backBtn').addEventListener('click', () => setStep(1));
+$('#loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const em = $('#li-email'), pw = $('#li-pass');
+  const u = users[em.value.trim().toLowerCase()];
+  fieldErr(em, !EMAIL.test(em.value.trim()) ? 'Enter a valid email address.' : '');
+  if (!EMAIL.test(em.value.trim())) return;
+  const good = u && (await hash(pw.value, u.salt)) === u.hash;
+  if (!fieldErr(pw, good ? '' : 'Email or password is incorrect.')) return;
+  signedIn(u, false);
+});
+function signedIn(u, isNew){
+  state.user = u; store.set('dc_session', u.email);
+  closeModal('authModal');
+  $('#signupForm').reset(); $('#loginForm').reset();
+  $$('.f.bad').forEach(f => f.classList.remove('bad')); $$('.f .err').forEach(e => e.textContent = '');
+  toast(isNew ? `Welcome to the Cartel, ${u.name.split(' ')[0]}` : `Welcome back, ${u.name.split(' ')[0]}`);
+  renderAll();
+  const next = state.after || (() => showView('shop'));
+  state.after = null; next();
+}
+function signOut(){
+  state.user = null; store.set('dc_session', null); state.promo = false; state.filter = 'all';
+  closeDrawers(); showView('home'); renderAll(); toast('You have signed out');
+}
+$$('.tabs button').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+
+/* ---------- landing renders ---------- */
+function renderDrop(){
+  $('#edList').innerHTML = DROP.map(([id, label], i) => { const p = byId(id); return `
+    <article class="ed-item" data-i="${i}" tabindex="0">
+      <span class="k">0${i+1} — ${label}</span>
+      <h3>${esc(p.name)}</h3><p>${esc(p.desc)}</p>
+      <div class="ed-buy"><div class="big">${bigPrice(p.price)}</div><button class="btn-sm" data-add="${p.id}">+ Cart</button></div>
+    </article>`; }).join('');
+}
+function renderPrices(){ $$('[data-price]').forEach(e => e.textContent = money(+e.dataset.price)); }
+$('#edList').addEventListener('mouseover', e => { const it = e.target.closest('.ed-item'); $$('.dot').forEach(d => d.classList.toggle('on', !!it && d.dataset.i === it.dataset.i)); });
+$('#edList').addEventListener('mouseleave', () => $$('.dot').forEach(d => d.classList.remove('on')));
+$('#edList').addEventListener('focusin', e => { const it = e.target.closest('.ed-item'); $$('.dot').forEach(d => d.classList.toggle('on', !!it && d.dataset.i === it.dataset.i)); });
+
+/* ---------- shop ---------- */
+function visible(){
+  const u = state.user;
+  let l = PRODUCTS.filter(p => state.filter === 'saved' ? u.wish.includes(p.id) : state.filter === 'limited' ? !!p.limited : state.filter === 'all' || p.cat === state.filter);
+  if (state.q) l = l.filter(p => (p.name + ' ' + p.desc + ' ' + p.cat).toLowerCase().includes(state.q));
+  if (state.sort === 'asc') l = [...l].sort((a,b) => a.price - b.price);
+  if (state.sort === 'desc') l = [...l].sort((a,b) => b.price - a.price);
+  if (state.sort === 'name') l = [...l].sort((a,b) => a.name.localeCompare(b.name));
+  return l;
+}
+function cardHTML(p){
+  const saved = state.user.wish.includes(p.id);
+  const sel = state.sel[p.id] || (state.sel[p.id] = defaultSize(p));
+  const sizes = p.sizes.map(s => { const out = (p.out || []).includes(s);
+    return `<button class="sz${s === sel ? ' on' : ''}" data-s="${s}" ${out ? 'disabled title="Sold out"' : ''} aria-pressed="${s === sel}">${s}</button>`; }).join('');
+  return `<article class="card" data-id="${p.id}">
+    <div class="card-img ph" style="--img:url('${p.img}')">
+      ${p.tag ? `<span class="badge">${esc(p.tag)}</span>` : ''}
+      <button class="heart${saved ? ' on' : ''}" data-heart="${p.id}" aria-pressed="${saved}" aria-label="${saved ? 'Remove from' : 'Add to'} saved items">${HEART}</button>
+    </div>
+    <div class="card-b">
+      <span class="cat">${p.cat}</span>
+      <h3>${esc(p.name)}</h3>
+      <p>${esc(p.desc)}</p>
+      <div class="price">${bigPrice(p.price)}</div>
+      <div class="sizes" role="group" aria-label="Size">${sizes}</div>
+      <button class="btn fill sm full" data-cardadd="${p.id}">Add to cart</button>
+    </div>
+  </article>`;
+}
+function renderShop(){
+  if (!state.user) return;
+  const first = state.user.name.split(' ')[0];
+  $('#shopWelcome').innerHTML = `Welcome, <b>${esc(first)}</b>. Every Drip Cartel piece, priced in ${state.cur === 'ZAR' ? 'South African rand' : 'US dollars'}.`;
+  $('#filters').innerHTML = CATS.map(([k, l]) => `<button data-f="${k}" class="${state.filter === k ? 'on' : ''}" aria-pressed="${state.filter === k}">${l}</button>`).join('');
+  const l = visible();
+  $('#count').textContent = `${l.length} of ${PRODUCTS.length} products`;
+  $('#grid').innerHTML = l.length ? l.map(cardHTML).join('') :
+    `<div class="no-res"><b>${state.filter === 'saved' ? 'No saved items yet' : 'No products found'}</b>${state.filter === 'saved' ? 'Tap the heart on any product to save it here.' : 'Try a different filter or search.'}</div>`;
+}
+$('#filters').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (b){ state.filter = b.dataset.f; renderShop(); } });
+$('#q').addEventListener('input', e => { state.q = e.target.value.trim().toLowerCase(); renderShop(); });
+$('#sort').addEventListener('change', e => { state.sort = e.target.value; renderShop(); });
+$('#grid').addEventListener('click', e => {
+  const sz = e.target.closest('.sz');
+  if (sz && !sz.disabled){
+    const card = sz.closest('.card');
+    $$('.sz', card).forEach(b => { b.classList.remove('on'); b.setAttribute('aria-pressed','false'); });
+    sz.classList.add('on'); sz.setAttribute('aria-pressed','true'); state.sel[card.dataset.id] = sz.dataset.s; return;
+  }
+  const add = e.target.closest('[data-cardadd]');
+  if (add){ const p = byId(add.dataset.cardadd); addToCart(p.id, state.sel[p.id] || defaultSize(p)); return; }
+  const h = e.target.closest('[data-heart]'); if (h) toggleWish(h.dataset.heart);
+});
+function toggleWish(id){
+  const w = state.user.wish, i = w.indexOf(id);
+  i > -1 ? w.splice(i, 1) : w.push(id);
+  saveUser(); if (!$('#shopView').hidden) renderShop();
+  toast(i > -1 ? 'Removed from saved items' : 'Saved to your wishlist');
+}
+
+/* ---------- cart ---------- */
+function addToCart(id, size){
+  const c = state.user.cart, l = c.find(x => x.id === id && x.size === size);
+  l ? l.qty++ : c.push({ id, size, qty:1 });
+  saveUser(); renderCart(); toast(`${byId(id).name} (${size}) added to cart`);
+}
+function totals(){
+  const c = state.user ? state.user.cart : [];
+  const sub = c.reduce((s, l) => s + byId(l.id).price * l.qty, 0);
+  const disc = state.promo ? Math.round(sub * 0.1) : 0;
+  const ship = !sub ? 0 : (sub - disc >= FREE_SHIP ? 0 : SHIP_FEE);
+  return { sub, disc, ship, total: sub - disc + ship };
+}
+function renderCart(){
+  const c = state.user ? state.user.cart : [];
+  const n = c.reduce((s, l) => s + l.qty, 0);
+  $('#cartN').textContent = n; $('#cartN').hidden = !n;
+  const body = $('#cartBody'), foot = $('#cartFoot');
+  if (!c.length){
+    body.innerHTML = `<div class="empty"><b>Your cart is empty</b>Pick something from the shop and it will show up here.</div>`;
+    foot.innerHTML = `<button class="btn fill full" data-shop="all">Go to the shop</button>`; return;
+  }
+  body.innerHTML = c.map((l, i) => { const p = byId(l.id); return `
+    <div class="line-item">
+      <div class="th ph" style="--img:url('${p.img}')"></div>
+      <div><h4>${esc(p.name)}</h4><small>Size ${esc(l.size)} · ${money(p.price)}</small>
+        <div class="qty"><button data-q="${i}" data-d="-1" aria-label="Decrease quantity">−</button><span>${l.qty}</span><button data-q="${i}" data-d="1" aria-label="Increase quantity">+</button></div></div>
+      <div class="pr">${money(p.price * l.qty)}<button class="rm" data-rm="${i}">Remove</button></div>
+    </div>`; }).join('');
+  const t = totals();
+  const left = Math.max(0, FREE_SHIP - (t.sub - t.disc));
+  foot.innerHTML = `
+    <div class="promo"><input id="promoIn" placeholder="Promo code" value="${state.promo ? 'DRIP10' : ''}" aria-label="Promo code"><button id="promoBtn">${state.promo ? 'Remove' : 'Apply'}</button></div>
+    <div class="ship-note">${left > 0 ? `Add ${money(left)} more for free shipping.` : 'You get free shipping on this order.'}</div>
+    <div class="sum">
+      <div><span>Subtotal</span><span>${money(t.sub)}</span></div>
+      ${t.disc ? `<div><span>DRIP10 (10% off)</span><span>−${money(t.disc)}</span></div>` : ''}
+      <div><span>Shipping</span><span>${t.ship ? money(t.ship) : 'Free'}</span></div>
+      <div class="tot"><span>Total</span><span>${money(t.total)}</span></div>
+    </div>
+    <button class="btn fill full" id="checkoutBtn">Place order</button>`;
+}
+$('#cartBody').addEventListener('click', e => {
+  const q = e.target.closest('[data-q]'), r = e.target.closest('[data-rm]'), c = state.user.cart;
+  if (q){ const l = c[+q.dataset.q]; l.qty += +q.dataset.d; if (l.qty < 1) c.splice(+q.dataset.q, 1); }
+  else if (r) c.splice(+r.dataset.rm, 1); else return;
+  saveUser(); renderCart();
+});
+$('#cartFoot').addEventListener('click', e => {
+  if (e.target.id === 'promoBtn'){
+    if (state.promo){ state.promo = false; return renderCart(); }
+    const v = $('#promoIn').value.trim().toUpperCase();
+    if (v !== 'DRIP10') return toast('That code is not valid');
+    if (state.user.orders.length) return toast('DRIP10 is for first orders only');
+    state.promo = true; renderCart(); toast('DRIP10 applied: 10% off');
+  }
+  if (e.target.id === 'checkoutBtn'){
+    const u = state.user, t = totals();
+    const order = { id:'DC-' + Math.random().toString(36).slice(2, 8).toUpperCase(), date:Date.now(), total:t.total,
+      items:u.cart.map(l => ({ ...l, name:byId(l.id).name })), address:u.address };
+    u.orders.unshift(order); u.cart = []; state.promo = false; saveUser(); renderCart(); closeDrawers();
+    toast(`Order ${order.id} placed. We will contact you to confirm payment.`);
+  }
+});
+
+/* ---------- profile ---------- */
+function renderProfile(){
+  const u = state.user; if (!u) return;
+  const initial = u.name.trim()[0].toUpperCase();
+  let html = `<div class="prof-top"><div class="av">${initial}</div><div><h4>${esc(u.name)}</h4><small>@${esc(u.username)}</small></div></div>`;
+  if (!state.editing){
+    html += `<dl class="kv">
+      <div><dt>Email</dt><dd>${esc(u.email)}</dd></div><div><dt>Phone</dt><dd>${esc(u.phone)}</dd></div>
+      <div><dt>Size</dt><dd>${esc(u.size)}</dd></div><div><dt>City</dt><dd>${esc(u.city)}</dd></div>
+      <div><dt>Address</dt><dd>${esc(u.address)}</dd></div></dl>
+      <button class="btn line sm full" id="editProf">Edit profile</button>
+      <div class="h-sm">Orders</div>
+      ${u.orders.length ? u.orders.map(o => `<div class="order"><b><span>${o.id}</span><span>${money(o.total)}</span></b>
+        <small>${new Date(o.date).toLocaleDateString('en-ZA')} · ${o.items.reduce((s,i)=>s+i.qty,0)} item(s)</small>
+        <small>${o.items.map(i => `${esc(i.name)} (${esc(i.size)}) ×${i.qty}`).join(', ')}</small></div>`).join('') : '<p style="color:var(--muted)">No orders yet.</p>'}
+      <div class="h-sm">Account</div><button class="link-btn" id="signOut">Sign out</button>`;
+  } else {
+    html += `<form id="editForm" novalidate>
+      <div class="f"><label for="pf-name">Full name</label><input id="pf-name" value="${esc(u.name)}"><span class="err"></span></div>
+      <div class="f"><label for="pf-phone">Phone</label><input id="pf-phone" value="${esc(u.phone)}"><span class="err"></span></div>
+      <div class="f"><label for="pf-city">City</label><input id="pf-city" value="${esc(u.city)}"><span class="err"></span></div>
+      <div class="f"><label for="pf-size">Usual size</label><select id="pf-size">${['S','M','L','XL','XXL'].map(s => `<option${s === u.size ? ' selected' : ''}>${s}</option>`).join('')}</select><span class="err"></span></div>
+      <div class="f"><label for="pf-addr">Delivery address</label><textarea id="pf-addr">${esc(u.address)}</textarea><span class="err"></span></div>
+      <div class="form-actions"><button class="btn line" type="button" id="cancelEdit">Cancel</button><button class="btn fill" type="submit">Save changes</button></div></form>`;
+  }
+  $('#profBody').innerHTML = html;
+}
+$('#profBody').addEventListener('click', e => {
+  if (e.target.id === 'editProf'){ state.editing = true; renderProfile(); }
+  if (e.target.id === 'cancelEdit'){ state.editing = false; renderProfile(); }
+  if (e.target.id === 'signOut') signOut();
+});
+$('#profBody').addEventListener('submit', e => {
+  e.preventDefault();
+  const n = $('#pf-name'), p = $('#pf-phone'), c = $('#pf-city'), a = $('#pf-addr');
+  let ok = true;
+  ok = fieldErr(n, n.value.trim().length < 2 ? 'Enter your full name.' : '') && ok;
+  ok = fieldErr(p, p.value.replace(/\D/g,'').length < 9 ? 'Enter a valid phone number.' : '') && ok;
+  ok = fieldErr(c, c.value.trim().length < 2 ? 'Enter your city.' : '') && ok;
+  ok = fieldErr(a, a.value.trim().length < 6 ? 'Enter your delivery address.' : '') && ok;
+  if (!ok) return;
+  Object.assign(state.user, { name:n.value.trim(), phone:p.value.trim(), city:c.value.trim(), size:$('#pf-size').value, address:a.value.trim() });
+  state.sel = {}; saveUser(); state.editing = false; renderAll(); toast('Profile updated');
+});
+
+/* ---------- nav + global renders ---------- */
+function renderNav(){
+  const b = $('#profBtn');
+  b.innerHTML = state.user ? `<span class="av">${esc(state.user.name.trim()[0].toUpperCase())}</span>` : USER;
+  b.setAttribute('aria-label', state.user ? 'Open my profile' : 'Sign in');
+  $$('.cur button').forEach(x => x.classList.toggle('on', x.dataset.cur === state.cur));
+}
+function renderAll(){ renderNav(); renderDrop(); renderPrices(); renderCart(); renderProfile(); if (!$('#shopView').hidden) renderShop(); }
+
+/* ---------- global events ---------- */
+document.addEventListener('click', e => {
+  const g = e.target.closest('[data-go]');
+  if (g){ e.preventDefault(); return go(g.dataset.go); }
+  const s = e.target.closest('[data-shop]');
+  if (s){ e.preventDefault(); return go('shop', { filter:s.dataset.shop }); }
+  const a = e.target.closest('[data-add]');
+  if (a){ const id = a.dataset.add; return requireAuth(() => addToCart(id, state.sel[id] || defaultSize(byId(id)))); }
+  const cur = e.target.closest('[data-cur]');
+  if (cur){ state.cur = cur.dataset.cur; store.set('dc_cur', state.cur); return renderAll(); }
+  if (e.target.closest('[data-close]')){ const m = e.target.closest('.modal'); return m ? closeModal(m.id) : closeDrawers(); }
+  if (e.target === $('#authModal')) closeModal('authModal');
+});
+$('#scrim').addEventListener('click', closeDrawers);
+$('#cartBtn').addEventListener('click', () => requireAuth(() => { renderCart(); openDrawer('cartDrawer'); }));
+$('#profBtn').addEventListener('click', () => requireAuth(() => { state.editing = false; renderProfile(); openDrawer('profDrawer'); }));
+$('#wishBtn').addEventListener('click', () => go('shop', { filter:'saved' }));
+$('#burger').addEventListener('click', () => { const o = $('#mainNav').classList.toggle('open'); $('#burger').setAttribute('aria-expanded', o); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape'){ if ($('#authModal').classList.contains('open')) closeModal('authModal'); closeDrawers(); closeMenu(); } });
+
+$('#contactForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const n = $('#ct-name'), m = $('#ct-email'), t = $('#ct-msg');
+  let ok = true;
+  ok = fieldErr(n, n.value.trim().length < 2 ? 'Enter your name.' : '') && ok;
+  ok = fieldErr(m, !EMAIL.test(m.value.trim()) ? 'Enter a valid email address.' : '') && ok;
+  ok = fieldErr(t, t.value.trim().length < 5 ? 'Write a short message.' : '') && ok;
+  if (!ok) return;
+  e.target.reset(); toast('Message sent. We will get back to you soon.');
+});
+
+$('#yr').textContent = new Date().getFullYear();
+renderAll();
+})();
+</script>
 </body>
 </html>
